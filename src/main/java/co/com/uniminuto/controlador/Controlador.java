@@ -256,7 +256,6 @@ public class Controlador extends HttpServlet {
 
     //planDAO.agregar();
 //    }
-    
     public void aceptarCliente(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
         Usuario usuario = usuarioFacadeLocal.find(request.getSession().getAttribute("idCliente"));
         request.getSession().removeAttribute("idCliente");
@@ -267,28 +266,38 @@ public class Controlador extends HttpServlet {
     }
 
     private void registroCliente(HttpServletRequest request, HttpServletResponse response) {
-        String nom = request.getParameter("nombre");
         String usu = request.getParameter("usuario");
+        String nom = request.getParameter("nombre");
         String correo = request.getParameter("correo");
-        
-        Usuario user = new Usuario();
-        user.setNombre(nom);
-        user.setUsuario(usu);
-        user.setDireccion("Cra 42 N° 6-27");
-        user.setNumeroDocumento(1121871723);
-        user.setContrasena(getRandomPass());
-        user.setTelefono("3187548224");
-        user.setCorreo(correo);
-        user.setTipoDocumento(BigInteger.ONE.intValue());
-        Rol rol = new Rol(RolEnum.CLIENTE.getValor());
-        user.setRol(rol);
-        user.setEstado(EstadoEnum.PENDIENTE.getValor());
-        usuarioFacadeLocal.create(user);
-        try {
-            response.sendRedirect("configuracion/indexConfig.jsp");
-        } catch (IOException ex) {
-            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+        if (usuarioFacadeLocal.findUserByUserAndName(usu, nom).isEmpty()) {
+            Usuario user = new Usuario();
+            user.setNombre(nom);
+            user.setUsuario(usu);
+            user.setDireccion("Cra 42 NÂ° 6-27");
+            user.setNumeroDocumento(1121871723);
+            user.setContrasena(getRandomPass());
+            user.setTelefono("3187548224");
+            user.setCorreo(correo);
+            user.setTipoDocumento(BigInteger.ONE.intValue());
+            Rol rol = new Rol(RolEnum.CLIENTE.getValor());
+            user.setRol(rol);
+            user.setEstado(EstadoEnum.PENDIENTE.getValor());
+            usuarioFacadeLocal.create(user);
+            try {
+                response.sendRedirect("configuracion/indexConfig.jsp");
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            request.getSession().setAttribute("ex", new Exception("El usuario ya existe en el sistema"));
+            try {
+                response.sendRedirect("registro/register.jsp");
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        
+
     }
 
     private String getRandomPass() {

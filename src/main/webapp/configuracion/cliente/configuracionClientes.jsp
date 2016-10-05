@@ -54,8 +54,10 @@
                             <th>Direccion</th> 
                         </tr>
                         <%
-                            List<Usuario> lu = new ListaUsuario().getLu();
-                            for (Usuario user : lu) {
+//                            List<Usuario> lu = new ListaUsuario().getLu();
+                            ListaUsuario lu = new ListaUsuario();
+                            lu.llenarListaUsuarios();
+                            for (Usuario user : lu.getLu()) {
                                 out.println("<tr>");
                                 out.println("<td>" + user.getNombre() + "</td>");
                                 out.println("<td>" + user.getNumeroDocumento() + "</td>");

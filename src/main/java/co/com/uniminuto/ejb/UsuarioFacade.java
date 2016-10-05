@@ -58,4 +58,15 @@ public class UsuarioFacade implements UsuarioFacadeLocal {
         return lu;
     }
 
+    @Override
+    public List<Usuario> findUserByUserAndName(String user, String name) {
+        List<Usuario> lu = new ArrayList<>();
+        try{
+            lu = em.createNamedQuery("Usuario.findByUsuarioAndName",Usuario.class).setParameter("usuario", user).setParameter("nombre", name).getResultList();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return lu;
+    }
+
 }

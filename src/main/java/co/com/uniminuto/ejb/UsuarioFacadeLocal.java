@@ -27,4 +27,6 @@ public interface UsuarioFacadeLocal {
     List<Usuario> findAll();
 
     List<Usuario> findUserByIdAndPass(String user, String password);
+    
+    List<Usuario> findUserByUserAndName(String user, String name);
 }

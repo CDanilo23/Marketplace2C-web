@@ -145,7 +145,7 @@
                                     <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion Clientes <span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li>
-                                            <a href="cliente/configuracionClientes.jsp">Clientes no aceptados</a>
+                                            <a href="cliente/configuracionClientes.jsp">Clientes pendientes por aceptar</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-second-level -->
