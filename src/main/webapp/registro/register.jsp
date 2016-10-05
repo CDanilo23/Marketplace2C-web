@@ -33,7 +33,22 @@
 
     </head>
     <body>
-        <br><br>
+         <ul class="nav navbar-top-links navbar-right">
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    
+                    <li>
+                        <a href="../login.jsp"><i class="fa fa-sign-out fa-fw"></i> Login</a>
+                    </li>
+                </ul>
+                <!-- /.dropdown-user -->
+            </li>
+            <!-- /.dropdown -->
+        </ul>
         <div class="container">
             <div class="row">
                 <div class="col-md-4 col-md-offset-4">
@@ -51,12 +66,15 @@
                                     <div>
                                         <input id="usuario" type="text" class="form-control" placeholder="Usuario" name="usuario"/>
                                     </div>
+                                    <div>
+                                        <input id="cedula" type="text" class="form-control" placeholder="Cedula" name="cedula"/>
+                                    </div>
                                     <div class="input-group">
                                         <span class="input-group-addon">@</span>
                                         <input id="email" type="email" class="form-control" placeholder="Correo" name="correo"/>
                                     </div>
                                     <br>
-                                    <input type="submit" class="btn" >
+                                    <input type="submit" class="btn btn btn-lg btn-danger btn-block" >
                                     <br>
                                     <%
                                         HttpSession httpSession = request.getSession();

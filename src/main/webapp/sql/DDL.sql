@@ -4,8 +4,8 @@
  * and open the template in the editor.
  */
 /**
- * Author:  pc
+ * Author:  cristian
  * Created: 4/10/2016
  */
-alter table marketplace.usuario add column ESTADO char(2);
-alter table marketplace.usuario modify column telefono varchar(10);
+alter table marketplace.usuario add column ESTADO varchar(1);
+alter table marketplace.usuario modify column TELEFONO varchar(10);

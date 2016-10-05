@@ -54,20 +54,17 @@
                             <th>Direccion</th> 
                         </tr>
                         <%
-//                            List<Usuario> lu = new ListaUsuario().getLu();
-                            ListaUsuario lu = new ListaUsuario();
-                            lu.llenarListaUsuarios();
-                            for (Usuario user : lu.getLu()) {
+                            List<Usuario> lu = new ListaUsuario().getLu();
+                            for (Usuario user : lu) {
                                 out.println("<tr>");
                                 out.println("<td>" + user.getNombre() + "</td>");
                                 out.println("<td>" + user.getNumeroDocumento() + "</td>");
                                 out.println("<td>" + user.getTelefono() + "</td>");
                                 out.println("<td>" + user.getDireccion() + "</td>");
-                                out.println("<td><a href='datosModificarHotel.jsp?id="+user.getIdUsuario()+
+                                out.println("<td><a href='datosAceptarCliente.jsp?idCliente="+user.getIdUsuario()+
                                         "&nombre="+user.getNombre()+
                                         "&usuario="+user.getUsuario()+
-                                        "&contrasena="+user.getContrasena()+
-                                        "&direccion="+user.getDireccion()+"'><img src='../../img/ok.jpg'/></a></td>");
+                                        "&contrasena="+user.getContrasena()+"'><img src='../../img/ok.jpg'/></a></td>");
                                 out.println("</tr>");
                             }
                         %>

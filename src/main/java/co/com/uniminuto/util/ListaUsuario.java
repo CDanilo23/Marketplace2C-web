@@ -44,9 +44,9 @@ public class ListaUsuario {
                 user.setTipoDocumento(rs.getInt(7));
                 user.setDireccion(rs.getString(8));
                 user.setRol(new Rol(rs.getInt(9)));
-                user.setCorreo(rs.getString(10));
-                user.setTelefono(rs.getString(11));
-                user.setEstado(rs.getInt(12));
+                user.setEstado(rs.getInt(10));
+                user.setCorreo(rs.getString(11));
+                user.setTelefono(rs.getString(12));
                 lu.add(user);
             }
         } catch (SQLException ex) {

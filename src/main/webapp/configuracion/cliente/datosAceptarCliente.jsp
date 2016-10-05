@@ -13,8 +13,9 @@
     </head>
     <body>
         <%
-            String id = (String)request.getParameter("id");
+            Integer id = Integer.valueOf( request.getParameter("idCliente"));
             session.setAttribute("idCliente", id);
+            session.setAttribute("envioCorreo", "envioCorreo");
             response.sendRedirect("../../Controlador");
         %>
     </body>

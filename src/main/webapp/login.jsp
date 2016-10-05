@@ -81,6 +81,22 @@
                                     <!-- Change this to a button or input when using this as a form -->
 
                                     <input type="submit" class="btn btn-lg btn-success btn-block" value="Login" name="Login"/>
+                                    <%
+                                        HttpSession httpSession = request.getSession();
+                                        java.lang.Exception ex = (java.lang.Exception) httpSession.getAttribute("ex");
+                                        if (ex != null && ex.getMessage() != null) {
+                                             String tipoAlerta="alert-danger";
+                                            if(ex.getCause()!=null && ex.getCause().getMessage().equals("Info")){
+                                                tipoAlerta="alert-info";
+                                            }
+                                           
+                                            out.println("<br>");
+                                            out.println("<div align='center'>");
+                                            out.println("<label class='"+tipoAlerta+"'>" + ex.getMessage() + "</label>");
+                                            out.println("</div>");
+                                        };
+                                        httpSession.removeAttribute("ex");
+                                    %>
                                 </fieldset>
                             </form>
                         </div>

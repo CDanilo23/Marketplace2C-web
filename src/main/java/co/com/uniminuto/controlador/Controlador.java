@@ -80,7 +80,18 @@ public class Controlador extends HttpServlet {
         //debemos hacer
 //        response.sendRedirect("configuracion/indexConfig.jsp");
         String accion = request.getParameter("accion");
-
+        Integer idCliente = (Integer)request.getSession().getAttribute("idCliente");
+        String envioCorreo = (String)request.getSession().getAttribute("envioCorreo");
+         if(envioCorreo.equals("envioCorreo")){
+            Usuario usuario = usuarioFacadeLocal.find(idCliente);
+            ControladorEnvioCorreo.envioCorreo(usuario);
+            usuarioFacadeLocal.edit(usuario);
+            usuarioFacadeLocal.remove(usuario);
+            request.getSession().removeAttribute("idCliente");
+            request.getSession().removeAttribute("envioCorreo");
+            response.sendRedirect("configuracion/cliente/configuracionClientes.jsp");
+            accion="";
+        }
         if (accion.equals("registro")) {
             this.registroCliente(request, response);
         }
@@ -105,6 +116,7 @@ public class Controlador extends HttpServlet {
         if (accion.equals("ModificarProveedor")) {
             this.modificarProveedor(request, response);
         }
+       
 //        else if (accion.equals("CrearPaquete")) {
 //            this.crearPaquete(request, response);
 //        }
@@ -119,6 +131,9 @@ public class Controlador extends HttpServlet {
         List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(request.getParameter("user"), request.getParameter("password"));
         if (listUser != null && !listUser.isEmpty()) {
             response.sendRedirect("configuracion/indexConfig.jsp");
+        }else{
+            request.getSession().setAttribute("ex", new Exception("El usuario no existe en el sistema"));
+            response.sendRedirect("login.jsp");
         }
     }
 
@@ -268,15 +283,14 @@ public class Controlador extends HttpServlet {
     private void registroCliente(HttpServletRequest request, HttpServletResponse response) {
         String usu = request.getParameter("usuario");
         String nom = request.getParameter("nombre");
+        String ced = request.getParameter("cedula");
         String correo = request.getParameter("correo");
         if (usuarioFacadeLocal.findUserByUserAndName(usu, nom).isEmpty()) {
             Usuario user = new Usuario();
             user.setNombre(nom);
             user.setUsuario(usu);
-            user.setDireccion("Cra 42 NÂ° 6-27");
-            user.setNumeroDocumento(1121871723);
+            user.setNumeroDocumento(Integer.valueOf(ced));
             user.setContrasena(getRandomPass());
-            user.setTelefono("3187548224");
             user.setCorreo(correo);
             user.setTipoDocumento(BigInteger.ONE.intValue());
             Rol rol = new Rol(RolEnum.CLIENTE.getValor());
@@ -284,7 +298,8 @@ public class Controlador extends HttpServlet {
             user.setEstado(EstadoEnum.PENDIENTE.getValor());
             usuarioFacadeLocal.create(user);
             try {
-                response.sendRedirect("configuracion/indexConfig.jsp");
+                request.getSession().setAttribute("ex", new Exception("El usuario fue registrado exitosamente.En unos momentos le llegara un correo con su usuario y contraseña", new Throwable("Info")));
+                response.sendRedirect("registro/register.jsp");
             } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
