@@ -4,6 +4,10 @@
     Author     : cristian.ordonez
 --%>
 
+<%@page import="java.util.LinkedList"%>
+<%@page import="co.com.uniminuto.dto.NivelHotelDTO"%>
+<%@page import="co.com.uniminuto.util.CombosUtil"%>
+<%@page import="java.util.List"%>
 <%@page import="co.com.uniminuto.entities.Hotel"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -14,7 +18,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-       <!-- Bootstrap Core CSS -->
+        <!-- Bootstrap Core CSS -->
         <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- MetisMenu CSS -->
@@ -62,12 +66,17 @@
                         <div class="form-group">
                             <%
                                 Hotel hotel = (Hotel) session.getAttribute("hotel");
-                                out.println("<label>Nombre Hotel</label>");
-                                out.println("<input name='nombre' value=" + hotel.getNombre() + " />");
-                                out.println("<label>Nivel Hotel</label>");
-                                out.println("<input name='nivel' value=" + hotel.getNivel() + " />");
-                                out.println("<label>Direccion Hotel</label>");
-                                out.println("<input name='direccion' value=" + hotel.getDireccion() + " />");
+                                out.println("<label>Nombre Hotel</label><br>");
+                                out.println("<input name='nombre' value=" + hotel.getNombre() + " /><br>");
+                                out.println("<label>Nivel Hotel</label><br>");
+                                out.println("<select name='nivel' class='form-control' value=" + hotel.getNivel() + " /><br>");
+                                LinkedList<NivelHotelDTO> ln = CombosUtil.getNivelesHotel();
+                                for (NivelHotelDTO nh : ln) {
+                                    out.println("<option value="+nh.getNivel()+">"+nh.getDescripcion()+"</option>");
+                                }
+                                out.println("</select><br>");
+                                out.println("<label>Direccion Hotel</label><br>");
+                                out.println("<input name='direccion' value=" + hotel.getDireccion() + " /><br>");
                                 out.println("<input type='hidden' name='id' value=" + hotel.getIdHotel() + " />");
                             %>
                         </div>
@@ -77,7 +86,7 @@
                 </div>
             </div>
         </div>
-                                  <!-- jQuery -->
+        <!-- jQuery -->
         <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 
         <!-- Bootstrap Core JavaScript -->

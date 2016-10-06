@@ -17,7 +17,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-         <!-- Bootstrap Core CSS -->
+        <!-- Bootstrap Core CSS -->
         <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- MetisMenu CSS -->
@@ -61,16 +61,10 @@
                 <div class="panel-group">
                     <form action="../../Controlador" method="post">
                         <div class="form-group">
-                            <label>Nombre Parque</label><br>
-                            <input name='nombreParque' type="text"><br>
-                            <label>Ciudad</label><br>
-                            <input name='ciudadParque' type="text"><br>
-                            <label>Pais</label><br>
-                            <input name='paisParque' type="text"><br>
-                            <label>Imagen</label><br>
-                            <input name='imagenParque' type="text"><br>
-                             <label>Ubicacion</label><br>
-                            <select class="form-control" name="idUbicacion">
+                            <input name='nombreParque' class='form-control' type='text' placeholder='Nombre Parque'><br>
+                            <input name='paisParque' class='form-control' type='text' placeholder='Pais'><br>
+                            <label class="label-info">Ubicacion</label><br>
+                            <select class='form-control' name="idUbicacion">
                                 <%
                                     List<Ubicacion> lu = CombosUtil.getUbicaciones();
                                     for (Ubicacion u : lu) {
@@ -87,7 +81,7 @@
                 </div>
             </div>
         </div>
-                 <!-- jQuery -->
+        <!-- jQuery -->
         <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 
         <!-- Bootstrap Core JavaScript -->

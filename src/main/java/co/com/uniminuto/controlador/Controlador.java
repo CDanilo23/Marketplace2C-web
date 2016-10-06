@@ -5,21 +5,16 @@
  */
 package co.com.uniminuto.controlador;
 
-//import co.com.uniminuto.dao.HotelDAO;
-//import co.com.uniminuto.dao.ParqueDAO;
-//import co.com.uniminuto.dao.PlanDAO;
-//import co.com.uniminuto.dao.ProveedorDAO;
-//import co.com.uniminuto.dao.UsuarioDAO;
-//import co.com.uniminuto.modelo.Hotel;
-//import co.com.uniminuto.modelo.Parque;
-//import co.com.uniminuto.modelo.Plan;
-//import co.com.uniminuto.modelo.Proveedor;
-//import co.com.uniminuto.modelo.Usuario;
+import static co.com.uniminuto.controlador.ControladorImagenes.convertirInputStreamAByte;
+import co.com.uniminuto.ejb.ArchivoFacadeLocal;
 import co.com.uniminuto.ejb.HotelFacadeLocal;
 import co.com.uniminuto.ejb.ParqueFacadeLocal;
+import co.com.uniminuto.ejb.PlanFacadeLocal;
 import co.com.uniminuto.ejb.UsuarioFacadeLocal;
+import co.com.uniminuto.entities.Archivo;
 import co.com.uniminuto.entities.Hotel;
 import co.com.uniminuto.entities.Parque;
+import co.com.uniminuto.entities.Plan;
 import co.com.uniminuto.entities.Rol;
 import co.com.uniminuto.entities.Ubicacion;
 import co.com.uniminuto.entities.Usuario;
@@ -27,20 +22,24 @@ import co.com.uniminuto.util.ControladorEnvioCorreo;
 import co.com.uniminuto.util.EstadoEnum;
 import co.com.uniminuto.util.RolEnum;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
- * @author
+ * @author cristian
  */
+@MultipartConfig(maxFileSize = 16177215)
 public class Controlador extends HttpServlet {
 
     @EJB
@@ -51,6 +50,12 @@ public class Controlador extends HttpServlet {
 
     @EJB
     protected ParqueFacadeLocal parqueFacadeLocal;
+    
+    @EJB
+    protected ArchivoFacadeLocal archivoFacadeLocal;
+    
+    @EJB
+    protected PlanFacadeLocal planFacadeLocal;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -85,7 +90,7 @@ public class Controlador extends HttpServlet {
          if(envioCorreo!= null && envioCorreo.equals("envioCorreo")){
             Usuario usuario = usuarioFacadeLocal.find(idCliente);
             ControladorEnvioCorreo.envioCorreo(usuario);
-            usuario.setEstado(1);
+            usuario.setEstado(EstadoEnum.ACEPTADO.getValor());
             usuarioFacadeLocal.edit(usuario);
             request.getSession().removeAttribute("idCliente");
             request.getSession().removeAttribute("envioCorreo");
@@ -120,11 +125,12 @@ public class Controlador extends HttpServlet {
 //        else if (accion.equals("CrearPaquete")) {
 //            this.crearPaquete(request, response);
 //        }
-//else if (accion.endsWith("CrearPlan")) {
-//            this.crearPlan(request, response);
-//        } else if (accion.equals("ModificarPlan")) {
-//            this.modificarPlan(request, response);
-//        }
+      if (accion.endsWith("CrearPlan")) {
+            this.crearPlan(request, response);
+        } 
+      if (accion.equals("ModificarPlan")) {
+            this.modificarPlan(request, response);
+        }
     }
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -183,14 +189,8 @@ public class Controlador extends HttpServlet {
         hotelFacadeLocal.edit(hotel);
         response.sendRedirect("configuracion/hotel/ConfiguracionHoteles.jsp");
     }
-//    
-//    public void eliminarHotel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        HotelDAO hotelDAO = new HotelDAO();
-//        hotelDAO.eliminarHotelPorId(Integer.valueOf(request.getParameter("idHotel")));
-//        response.sendRedirect("configuracion/EliminarHotel.jsp");
-//    }
-//    
-//    public void modificarPlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    public void modificarPlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
 //        Plan plan = new Plan();
 //        plan.setIdPlan(Integer.valueOf(request.getParameter("idPlan")));
 //        plan.setNombrePlan(request.getParameter("nombre"));
@@ -204,22 +204,40 @@ public class Controlador extends HttpServlet {
 //        PlanDAO planDAO = new PlanDAO();
 //        planDAO.modificar(plan);
 //        response.sendRedirect("configuracion/ConfiguracionPlanes.jsp");
-//    }
+    }
 //    
-//    public void crearPlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        Plan plan = new Plan();
-//        plan.setNombrePlan(request.getParameter("nombre"));
-//        plan.setCosto(Integer.valueOf(request.getParameter("costo")));
-//        plan.setDescripcion(request.getParameter("descripcion"));
-//        plan.setDias(Integer.valueOf(request.getParameter("dias")));
-//        plan.setNoches(Integer.valueOf(request.getParameter("noches")));
-//        Parque parque = new Parque();
-//        parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
-//        plan.setParque(parque);
-//        PlanDAO planDao = new PlanDAO();
-//        planDao.agregar(plan);
-//        response.sendRedirect("configuracion/ConfiguracionPlanes.jsp");
-//    }
+    public void crearPlan(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        
+        Plan plan = new Plan();
+        plan.setNombrePlan(request.getParameter("nombre"));
+        plan.setCosto(Integer.valueOf(request.getParameter("costo")));
+        plan.setDescripcion(request.getParameter("descripcion"));
+        plan.setDias(Integer.valueOf(request.getParameter("dias")));
+        plan.setNoches(Integer.valueOf(request.getParameter("noches")));
+        Parque parque = new Parque();
+        parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
+        plan.setParque(parque);
+        Hotel hotel = new Hotel();
+        hotel.setIdHotel(Integer.valueOf(request.getParameter("idHotel")));
+        plan.setHotel(hotel);
+        planFacadeLocal.create(plan);
+        
+        String nombreImg = request.getParameter("photo");
+        InputStream inputStream = null; // input stream of the upload file
+        // obtains the upload file part in this multipart request
+        Part filePart = request.getPart("photo");
+        if (filePart != null) {
+            inputStream = filePart.getInputStream();
+        }
+        if (inputStream != null) {
+            Archivo archivo = new Archivo();
+            archivo.setNombre(nombreImg);
+            archivo.setImg(convertirInputStreamAByte(inputStream));
+            archivoFacadeLocal.create(archivo);
+        }
+        
+        response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
+    }
 //    
 
     public void crearProveedor(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -298,13 +316,13 @@ public class Controlador extends HttpServlet {
             user.setEstado(EstadoEnum.PENDIENTE.getValor());
             usuarioFacadeLocal.create(user);
             try {
-                request.getSession().setAttribute("ex", new Exception("El usuario fue registrado exitosamente.En unos momentos le llegara un correo con su usuario y contraseña", new Throwable("Info")));
+                request.getSession().setAttribute("ex", new Exception("El usuario fue registrado exitosamente. En unos momentos llegara a su correo las credenciales de ingreso.", new Throwable("Info")));
                 response.sendRedirect("registro/register.jsp");
             } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            request.getSession().setAttribute("ex", new Exception("El usuario ya existe en el sistema"));
+            request.getSession().setAttribute("ex", new Exception("El usuario ya existe en el sistema."));
             try {
                 response.sendRedirect("registro/register.jsp");
             } catch (IOException ex) {

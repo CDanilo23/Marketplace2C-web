@@ -80,12 +80,16 @@
                                         HttpSession httpSession = request.getSession();
                                         java.lang.Exception ex = (java.lang.Exception) httpSession.getAttribute("ex");
                                         if (ex != null && ex.getMessage() != null) {
+                                            String tipoAlerta="alert-danger";
+                                            if(ex.getCause()!=null){
+                                                tipoAlerta = "alert-success";
+                                            }
                                             out.println("<br>");
                                             out.println("<div align='center'>");
-                                            out.println("<label class='alert-danger'>" + ex.getMessage() + "</label>");
+                                            out.println("<label class='"+tipoAlerta+"'>" + ex.getMessage() + "</label>");
                                             out.println("</div>");
+                                            httpSession.removeAttribute("ex");
                                         };
-                                        httpSession.removeAttribute("ex");
                                     %>
                                 </fieldset>
                             </form>

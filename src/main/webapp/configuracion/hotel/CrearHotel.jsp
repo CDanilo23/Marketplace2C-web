@@ -4,6 +4,9 @@
     Author     : cristian.ordonez
 --%>
 
+<%@page import="co.com.uniminuto.dto.NivelHotelDTO"%>
+<%@page import="java.util.LinkedList"%>
+<%@page import="co.com.uniminuto.util.NivelHotelEnum"%>
 <%@page import="co.com.uniminuto.util.CombosUtil"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
@@ -65,7 +68,17 @@
                             <label>Nombre Hotel</label><br>
                             <input name='nombreHotel' type="text"><br>
                             <label>Nivel</label><br>
-                            <input name='nivelHotel' type="text"><br>
+                            <select class="form-control" name="nivelHotel">
+                                <%
+                                  
+                                    List<NivelHotelDTO> ln = CombosUtil.getNivelesHotel();
+                                    for (NivelHotelDTO nh : ln) {
+                                %>
+                                <option value="<%=nh.getNivel()%>"><%=nh.getDescripcion()%></option>
+                                <%
+                                    }
+                                %>
+                            </select>
                             <label>Direccion</label><br>
                             <input name='direccion' type="text"><br>
                             <label>Ubicacion</label><br>

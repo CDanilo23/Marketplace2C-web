@@ -1,13 +1,13 @@
 <%-- 
-    Document   : ConfiguracionParuques
-    Created on : 5/09/2016, 03:41:43 PM
+    Document   : ConfiguracionPlanes
+    Created on : 14/09/2016, 07:26:57 AM
     Author     : cristian.ordonez
 --%>
 
-<%@page import="co.com.uniminuto.util.Conexion"%>
 <%@page import="java.util.List"%>
-<%@page import="co.com.uniminuto.util.AccionesEnum"%>
-<%@page import="co.com.uniminuto.entities.Parque"%>
+<%@page import="co.com.uniminuto.util.Conexion"%>
+<%@page import="java.util.LinkedList"%>
+<%@page import="co.com.uniminuto.entities.Plan"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -28,7 +28,7 @@
 
         <!-- Custom Fonts -->
         <link href="../../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <title>Configuracion parques</title>
+        <title>Configuracion Planes</title>
     </head>
     <body>
 
@@ -40,11 +40,11 @@
                             <a href="../indexConfig.jsp"><i class="fa fa-dashboard fa-fw"></i> Index</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion Parques<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion Planes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                               
+
                                 <li>
-                                    <a href="CrearParque.jsp">Crear nuevo Parque</a>
+                                    <a href="crearPlan.jsp">Crear nuevo Plan</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -54,41 +54,46 @@
                 <!-- /.sidebar-collapse -->
             </div>
             <div id="page-wrapper">
-                <form action="datosModificarParque.jsp" method="get"> 
-                    <table class='table table-hover'>
+                <form action="datosModificarPlan.jsp" method="get">
+                    <table class='table table-hover table-bordered'>
                         <br>    
-                        <caption><h1>Configuracion Parques</h1></caption>
+                        <caption><h1>Configuracion Planes</h1></caption>
                         <br>
                         <tr>
-                            <th>Nombre del parque</th>  
-                            <th>Ciudad</th> 
-                            <th>Pais</th> 
-                            <th></th>
+                            <th>Nombre del plan</th>  
+                            <th>Descripcion</th> 
+                            <th>Costo</th>
+                            <th>Dias</th>
+                            <th>Noches</th> 
                             <th></th>
                         </tr>
                         <%
-                            List<Parque> lp = new Conexion(AccionesEnum.ConsultarParques).getLp();
-                            for (Parque parque : lp) {
+                            List<Plan> lp = Conexion.getPlanes();
+                            for (Plan plan : lp) {
                                 out.println("<tr>");
-                                out.println("<td>" + parque.getParque() + "</td>");
-                                out.println("<td>" + parque.getIdUbicacion().getCiudad() + "</td>");
-                                out.println("<td>" + parque.getIdUbicacion().getPais() + "</td>");
-                                out.println("<td><a href='datosModificarParque.jsp?id=" + parque.getIdParque()
-                                        + "&nombreParque=" + parque.getParque()
-                                        + "&idUbicacion=" + parque.getIdUbicacion().getIdUbicacion()
-                                        + "&ciudadParque=" + parque.getIdUbicacion().getCiudad()
-                                        + "&paisParque=" + parque.getIdUbicacion().getPais()
-                                        + "'><img src='../../img/modificar.jpg'/></a></td>");
-                                out.println("<td><a href='datosModificarParque.jsp?id=" + parque.getIdParque() + "'><img src='../../img/eliminar.jpg'/></a></td>");
+                                out.println("<td>" + plan.getNombrePlan() + "</td>");
+                                out.println("<td>" + plan.getDescripcion() + "</td>");
+                                out.println("<td>" + plan.getCosto() + "</td>");
+                                out.println("<td>" + plan.getDias() + "</td>");
+                                out.println("<td>" + plan.getNoches() + "</td>");
+//                                out.println("<td align='center'><table><tr><td>" + plan.getParque().getParque() + "</td><td><img src='../img/" + plan.getParque().getImg() + "'></img></td></tr></table></td>");
+                                out.println("<td><a href='datosModificarPlan.jsp?id=" + plan.getIdPlan()
+                                        + "&nombre=" + plan.getNombrePlan()
+                                        + "&descripcion=" + plan.getDescripcion()
+                                        + "&costo=" + plan.getCosto()
+                                        + "&dias=" + plan.getDias()
+                                        + "&noches=" + plan.getNoches()
+                                        + "&idParque=" + plan.getParque().getIdParque() 
+                                        + "&parque="+plan.getParque().getParque()+"'><img src='../../img/modificar.jpg'/></a></td>");
                                 out.println("</tr>");
                             }
                         %>
 
                     </table>
-                </form>
+                </form> 
             </div>
         </div>
-                         <!-- jQuery -->
+        <!-- jQuery -->
         <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 
         <!-- Bootstrap Core JavaScript -->
@@ -101,3 +106,4 @@
         <script src="../../dist/js/sb-admin-2.js"></script>
     </body>
 </html>
+

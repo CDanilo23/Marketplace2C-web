@@ -68,10 +68,10 @@ public class Plan implements Serializable {
     private List<ClientePlan> clientePlanList;
     @JoinColumn(name = "ID_PARQUE", referencedColumnName = "ID_PARQUE")
     @ManyToOne
-    private Parque idParque;
+    private Parque parque;
     @JoinColumn(name = "ID_HOTEL", referencedColumnName = "ID_HOTEL")
     @ManyToOne
-    private Hotel idHotel;
+    private Hotel hotel;
 
     public Plan() {
     }
@@ -138,20 +138,20 @@ public class Plan implements Serializable {
         this.clientePlanList = clientePlanList;
     }
 
-    public Parque getIdParque() {
-        return idParque;
+    public Parque getParque() {
+        return parque;
     }
 
-    public void setIdParque(Parque idParque) {
-        this.idParque = idParque;
+    public void setParque(Parque parque) {
+        this.parque = parque;
     }
 
-    public Hotel getIdHotel() {
-        return idHotel;
+    public Hotel getHotel() {
+        return hotel;
     }
 
-    public void setIdHotel(Hotel idHotel) {
-        this.idHotel = idHotel;
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
     }
 
     @Override

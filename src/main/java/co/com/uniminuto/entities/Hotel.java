@@ -38,12 +38,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Hotel.findByDireccion", query = "SELECT h FROM Hotel h WHERE h.direccion = :direccion")})
 public class Hotel implements Serializable {
 
-    @Column(name = "NIVEL")
-    private Integer nivel;
-    @JoinColumn(name = "ID_UBICACION", referencedColumnName = "ID_UBICACION")
-    @ManyToOne
-    private Ubicacion idUbicacion;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,8 +50,13 @@ public class Hotel implements Serializable {
     @Size(max = 45)
     @Column(name = "DIRECCION")
     private String direccion;
-    @OneToMany(mappedBy = "idHotel")
+    @OneToMany(mappedBy = "hotel")
     private List<Plan> planList;
+    @Column(name = "NIVEL")
+    private Integer nivel;
+    @JoinColumn(name = "ID_UBICACION", referencedColumnName = "ID_UBICACION")
+    @ManyToOne
+    private Ubicacion idUbicacion;
 
     public Hotel() {
     }

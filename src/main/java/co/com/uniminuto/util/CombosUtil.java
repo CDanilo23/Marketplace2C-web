@@ -5,6 +5,7 @@
  */
 package co.com.uniminuto.util;
 
+import co.com.uniminuto.dto.NivelHotelDTO;
 import co.com.uniminuto.entities.Ubicacion;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,5 +49,15 @@ public class CombosUtil {
              }
          }
          return lu;
+    }
+    
+    public static LinkedList<NivelHotelDTO>  getNivelesHotel(){
+        LinkedList<NivelHotelDTO> ln = new LinkedList<>();
+        ln.add(new NivelHotelDTO(NivelHotelEnum.CINCO_ESTRELLAS.getDescripcion(), NivelHotelEnum.CINCO_ESTRELLAS.getNivel()));
+        ln.add(new NivelHotelDTO(NivelHotelEnum.CUATRO_ESTRELLAS.getDescripcion(), NivelHotelEnum.CUATRO_ESTRELLAS.getNivel())); 
+        ln.add(new NivelHotelDTO(NivelHotelEnum.TRES_ESTRELLAS.getDescripcion(), NivelHotelEnum.TRES_ESTRELLAS.getNivel()));
+        ln.add(new NivelHotelDTO(NivelHotelEnum.DOS_ESTRELLAS.getDescripcion(), NivelHotelEnum.DOS_ESTRELLAS.getNivel()));
+        ln.add(new NivelHotelDTO(NivelHotelEnum.UNA_ESTRELLA.getDescripcion(), NivelHotelEnum.UNA_ESTRELLA.getNivel()));
+        return ln;
     }
 }

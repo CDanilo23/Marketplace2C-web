@@ -24,7 +24,6 @@
                 String nombreParque = (String) request.getParameter("nombreParque");
                 String ciudadParque = (String) request.getParameter("ciudadParque");
                 String paisParque = (String) request.getParameter("paisParque");
-                String img = (String) request.getParameter("img");
                 Integer idUbicacion = Integer.valueOf(request.getParameter("idUbicacion"));
                 Parque parque = new Parque();
                 parque.setIdParque(Integer.valueOf(id));
@@ -34,7 +33,6 @@
                 ubicacion.setCiudad(ciudadParque);
                 ubicacion.setPais(paisParque);
                 parque.setIdUbicacion(ubicacion);
-                parque.setImg(img);
                 session.setAttribute("parque", parque);
                 response.sendRedirect("ModificarParque.jsp");
             }

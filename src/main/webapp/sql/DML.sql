@@ -1,17 +1,28 @@
 
+/*Roles*/
+insert into marketplace.rol values (1,'Administrador');
+insert into marketplace.rol values (2,'Cliente');
+insert into marketplace.rol values (3,'Proveedor');
 /*
-Usuarios
+Usuario root
 */
-INSERT INTO `marketplace`.`usuario` (`ID_USUARIO`, `USUARIO`, `CONTRASENA`, `ROL`) VALUES ('1', 'cristian', 'cristian', '1');
+INSERT INTO `marketplace`.`usuario` (`ID_USUARIO`, `USUARIO`, `CONTRASENA`, `NOMBRE`,`EMPRESA`,`NUMERO_DOCUMENTO`,`TIPO_DOCUMENTO`,`DIRECCION`,`ROL`,`ESTADO`,`CORREO`,`TELEFONO`) VALUES ('1', 'root', 'root', null,null,null,null,null,1,null,null,null);
 
+/*Ubicaciones*/
+insert into marketplace.ubicacion values (2,'SantaMarta','Colombia');
+insert into marketplace.ubicacion values (3,'Cali','Colombia');
+insert into marketplace.ubicacion values (4,'Medellin','Colombia');
+insert into marketplace.ubicacion values (5,'Barranquilla','Colombia');
+insert into marketplace.ubicacion values (6,'Villavicencio','Colombia');
+insert into marketplace.ubicacion values (7,'Bucaramanga','Colombia');
 /**
 /**
 insert parque
 */
-INSERT INTO marketplace.parque (`id_parque`,`CIUDAD`,`PAIS`,`PARQUE`,`IMG`) VALUES (7,'Villavicencio','Colombia','Ocarros','ocarros.jpg');
-INSERT INTO marketplace.parque (`id_parque`,`CIUDAD`,`PAIS`,`PARQUE`,`IMG`) VALUES (8,'Bucaramanga','Colombia','Parque del Chicamocha','Chicamocha.jpg');
-INSERT INTO marketplace.parque (`id_parque`,`CIUDAD`,`PAIS`,`PARQUE`,`IMG`) VALUES (9,'Santa Marta','Colombia','Sierra Nevada de Santa Marta','SierraNevada.jpg');
-INSERT INTO marketplace.parque (`id_parque`,`CIUDAD`,`PAIS`,`PARQUE`,`IMG`) VALUES (10,'Sierra','Colombia','Canio Cristales','Cristales.jpg');
+INSERT INTO marketplace.parque (`ID_PARQUE`,`PARQUE`,`ID_UBICACION`) VALUES (1,'Ocarros',6);
+INSERT INTO marketplace.parque (`ID_PARQUE`,`PARQUE`,`ID_UBICACION`) VALUES (2,'ParqueChicamocha',7);
+INSERT INTO marketplace.parque (`ID_PARQUE`,`PARQUE`,`ID_UBICACION`) VALUES (3,'Sierra_Nevada_Santa_Marta',2);
+INSERT INTO marketplace.parque (`ID_PARQUE`,`PARQUE`,`ID_UBICACION`) VALUES (4,'CanioCristales',6);
 
 /**
 insert plan
@@ -20,7 +31,6 @@ INSERT INTO marketplace.plan (`ID_PLAN`,`NOMBRE_PLAN`,`COSTO`,`DESCRIPCION`,`DIA
 INSERT INTO marketplace.plan (`ID_PLAN`,`NOMBRE_PLAN`,`COSTO`,`DESCRIPCION`,`DIAS`,`NOCHES`,`ID_PARQUE`,`ID_ARCHIVO`) VALUES (3,'Plan canio cristales','5000000','Plan Parque caÃ±o cristales','5','6',10,NULL);
 INSERT INTO marketplace.plan (`ID_PLAN`,`NOMBRE_PLAN`,`COSTO`,`DESCRIPCION`,`DIAS`,`NOCHES`,`ID_PARQUE`,`ID_ARCHIVO`) VALUES (5,'Plan1 Chicamocha','2000000','Plan parque del chicamocha','3','2',8,NULL);
 
-SELECT * FROM marketplace.rol;
 insert into marketplace.rol values(1,'Administrador');
 commit;
 SELECT * FROM marketplace.hotel;

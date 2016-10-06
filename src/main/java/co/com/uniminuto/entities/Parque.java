@@ -29,18 +29,12 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "parque")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Parque.findAll", query = "SELECT p FROM Parque p"),
     @NamedQuery(name = "Parque.findByIdParque", query = "SELECT p FROM Parque p WHERE p.idParque = :idParque"),
     @NamedQuery(name = "Parque.findByParque", query = "SELECT p FROM Parque p WHERE p.parque = :parque")
-//    @NamedQuery(name = "Parque.findByImg", query = "SELECT p FROM Parque p WHERE p.img = :img")
 })
 public class Parque implements Serializable {
-
-    @JoinColumn(name = "ID_UBICACION", referencedColumnName = "ID_UBICACION")
-    @ManyToOne
-    private Ubicacion idUbicacion;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,11 +45,10 @@ public class Parque implements Serializable {
     @Size(max = 45)
     @Column(name = "PARQUE")
     private String parque;
-//    @Size(max = 45)
-//    @Column(name = "IMG")
-//    private String img;
-    @OneToMany(mappedBy = "idParque")
-    private List<Plan> planList;
+    
+    @JoinColumn(name = "ID_UBICACION", referencedColumnName = "ID_UBICACION")
+    @ManyToOne
+    private Ubicacion idUbicacion;
 
     public Parque() {
     }
@@ -80,23 +73,6 @@ public class Parque implements Serializable {
         this.parque = parque;
     }
 
-//    public String getImg() {
-//        return img;
-//    }
-//
-//    public void setImg(String img) {
-//        this.img = img;
-//    }
-
-    @XmlTransient
-    public List<Plan> getPlanList() {
-        return planList;
-    }
-
-    public void setPlanList(List<Plan> planList) {
-        this.planList = planList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -119,7 +95,7 @@ public class Parque implements Serializable {
 
     @Override
     public String toString() {
-        return "co.com.uniminuto.ejb.Parque[ idParque=" + idParque + " ]";
+        return "co.com.uniminuto.entities.Parque[ idParque=" + idParque + " ]";
     }
 
     public Ubicacion getIdUbicacion() {

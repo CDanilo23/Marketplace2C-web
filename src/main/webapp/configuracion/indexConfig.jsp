@@ -85,13 +85,10 @@
                                     <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion Planes <span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li>
-                                            <a href="../configuracion/ConfiguracionPlanes.jsp">Consulta Planes</a>
+                                            <a href="../configuracion/plan/configuracionPlanes.jsp">Consulta Planes</a>
                                         </li>
                                         <li>
-                                            <a href="../configuracion/CrearPlan.jsp">Crear nuevo Plan</a>
-                                        </li>
-                                        <li>
-                                            <a href="../configuracion/EliminarPlan.jsp">Eliminar Plan</a>
+                                            <a href="../configuracion/plan/crearPlan.jsp">Crear nuevo Plan</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-second-level -->
