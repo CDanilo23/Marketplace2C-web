@@ -9,3 +9,9 @@
  */
 alter table marketplace.usuario add column ESTADO varchar(1);
 alter table marketplace.usuario modify column TELEFONO varchar(10);
+
+/** se agrega campo imagen a archivo*/
+alter table marketplace.archivo add column IMG LONGBLOB;
+
+/** se quita campo ruta*/
+alter table marketplace.archivo drop column ruta;
