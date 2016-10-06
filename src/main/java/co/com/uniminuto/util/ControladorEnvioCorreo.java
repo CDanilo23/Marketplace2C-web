@@ -6,6 +6,8 @@
 package co.com.uniminuto.util;
 
 import co.com.uniminuto.entities.Usuario;
+import com.sun.mail.util.MailSSLSocketFactory;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,12 +28,15 @@ import javax.mail.internet.MimeMultipart;
  */
 public class ControladorEnvioCorreo {
 
-    public static void envioCorreo(Usuario usuario) {
+    public static void envioCorreo(Usuario usuario) throws GeneralSecurityException {
+        MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        sf.setTrustAllHosts(true);
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", 587);
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.ssl.socketFactory", sf);
         Session session;
         session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {

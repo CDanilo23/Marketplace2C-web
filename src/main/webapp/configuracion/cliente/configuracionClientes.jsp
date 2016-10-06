@@ -48,19 +48,19 @@
                         <caption><h1>Configuracion Clientes</h1></caption>
                         <br>
                         <tr>
-                            <th>Nombre Cliente</th>  
-                            <th>Numero documento</th> 
-                            <th>Telefono</th> 
-                            <th>Direccion</th> 
+                            <th>Usuario</th>  
+                            <th>Nombre</th> 
+                            <th>Numero de documento</th> 
+                            <th>Correo</th> 
                         </tr>
                         <%
                             List<Usuario> lu = new ListaUsuario().getLu();
                             for (Usuario user : lu) {
                                 out.println("<tr>");
+                                out.println("<td>" + user.getUsuario() + "</td>");
                                 out.println("<td>" + user.getNombre() + "</td>");
                                 out.println("<td>" + user.getNumeroDocumento() + "</td>");
-                                out.println("<td>" + user.getTelefono() + "</td>");
-                                out.println("<td>" + user.getDireccion() + "</td>");
+                                out.println("<td>" + user.getCorreo() + "</td>");
                                 out.println("<td><a href='datosAceptarCliente.jsp?idCliente="+user.getIdUsuario()+
                                         "&nombre="+user.getNombre()+
                                         "&usuario="+user.getUsuario()+

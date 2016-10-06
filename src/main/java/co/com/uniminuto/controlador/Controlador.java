@@ -82,11 +82,11 @@ public class Controlador extends HttpServlet {
         String accion = request.getParameter("accion");
         Integer idCliente = (Integer)request.getSession().getAttribute("idCliente");
         String envioCorreo = (String)request.getSession().getAttribute("envioCorreo");
-         if(envioCorreo.equals("envioCorreo")){
+         if(envioCorreo!= null && envioCorreo.equals("envioCorreo")){
             Usuario usuario = usuarioFacadeLocal.find(idCliente);
             ControladorEnvioCorreo.envioCorreo(usuario);
+            usuario.setEstado(1);
             usuarioFacadeLocal.edit(usuario);
-            usuarioFacadeLocal.remove(usuario);
             request.getSession().removeAttribute("idCliente");
             request.getSession().removeAttribute("envioCorreo");
             response.sendRedirect("configuracion/cliente/configuracionClientes.jsp");
