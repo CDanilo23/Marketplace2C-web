@@ -37,11 +37,16 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Parque implements Serializable {
 
     private static final long serialVersionUID = 1L;
+        
+    @OneToMany(mappedBy = "idParque")
+    private List<Plan> planList;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_PARQUE")
     private Integer idParque;
+    
     @Size(max = 45)
     @Column(name = "PARQUE")
     private String parque;
@@ -105,5 +110,13 @@ public class Parque implements Serializable {
     public void setIdUbicacion(Ubicacion idUbicacion) {
         this.idUbicacion = idUbicacion;
     }
-    
+
+    public List<Plan> getPlanList() {
+        return planList;
+    }
+
+    public void setPlanList(List<Plan> planList) {
+        this.planList = planList;
+    }
+
 }

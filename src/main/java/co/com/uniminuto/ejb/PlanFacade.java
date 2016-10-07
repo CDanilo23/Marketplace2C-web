@@ -29,4 +29,7 @@ public class PlanFacade extends AbstractFacade<Plan> implements PlanFacadeLocal 
         super(Plan.class);
     }
     
+    public Plan merge(Plan plan){
+        return em.merge(plan);
+    }
 }

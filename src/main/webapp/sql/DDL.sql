@@ -15,3 +15,8 @@ alter table marketplace.archivo add column IMG LONGBLOB;
 
 /** se quita campo ruta*/
 alter table marketplace.archivo drop column ruta;
+
+/** se agrega autoincrement a tabla parque*/
+alter table marketplace.parque  change id_parque id_parque  int AUTO_INCREMENT;
+/** se agrega autoincrement a tabla archivo*/
+alter table marketplace.archivo modify column id_archivo int auto_increment;

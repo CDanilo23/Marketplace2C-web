@@ -15,5 +15,6 @@ public enum AccionesEnum {
     EliminarProveedor,
     ConsultarHoteles,
     ConsultarParques,
-    ConsultarProveedor;
+    ConsultarProveedor,
+    ConsultarPlanes;
 }

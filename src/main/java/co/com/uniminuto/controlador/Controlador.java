@@ -24,6 +24,7 @@ import co.com.uniminuto.util.RolEnum;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,10 +51,10 @@ public class Controlador extends HttpServlet {
 
     @EJB
     protected ParqueFacadeLocal parqueFacadeLocal;
-    
+
     @EJB
     protected ArchivoFacadeLocal archivoFacadeLocal;
-    
+
     @EJB
     protected PlanFacadeLocal planFacadeLocal;
 
@@ -85,17 +86,15 @@ public class Controlador extends HttpServlet {
         //debemos hacer
 //        response.sendRedirect("configuracion/indexConfig.jsp");
         String accion = request.getParameter("accion");
-        Integer idCliente = (Integer)request.getSession().getAttribute("idCliente");
-        String envioCorreo = (String)request.getSession().getAttribute("envioCorreo");
-         if(envioCorreo!= null && envioCorreo.equals("envioCorreo")){
-            Usuario usuario = usuarioFacadeLocal.find(idCliente);
-            ControladorEnvioCorreo.envioCorreo(usuario);
-            usuario.setEstado(EstadoEnum.ACEPTADO.getValor());
-            usuarioFacadeLocal.edit(usuario);
-            request.getSession().removeAttribute("idCliente");
-            request.getSession().removeAttribute("envioCorreo");
-            response.sendRedirect("configuracion/cliente/configuracionClientes.jsp");
-            accion="";
+        Integer idCliente = (Integer) request.getSession().getAttribute("idCliente");
+        String envioCorreo = (String) request.getSession().getAttribute("envioCorreo");
+        Integer idPlan = (Integer) request.getSession().getAttribute("idPlan");
+        String eliminarPlan = (String) request.getSession().getAttribute("eliminarPlan");
+        if (idPlan != null && eliminarPlan != null) {
+            this.eliminarPlan(idPlan,request,response);
+        }
+        if (envioCorreo != null && envioCorreo.equals("envioCorreo")) {
+            this.registroParcialCliente(idCliente, request, response);
         }
         if (accion.equals("registro")) {
             this.registroCliente(request, response);
@@ -121,14 +120,14 @@ public class Controlador extends HttpServlet {
         if (accion.equals("ModificarProveedor")) {
             this.modificarProveedor(request, response);
         }
-       
+
 //        else if (accion.equals("CrearPaquete")) {
 //            this.crearPaquete(request, response);
 //        }
-      if (accion.endsWith("CrearPlan")) {
+        if (accion.endsWith("CrearPlan")) {
             this.crearPlan(request, response);
-        } 
-      if (accion.equals("ModificarPlan")) {
+        }
+        if (accion.equals("ModificarPlan")) {
             this.modificarPlan(request, response);
         }
     }
@@ -137,7 +136,7 @@ public class Controlador extends HttpServlet {
         List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(request.getParameter("user"), request.getParameter("password"));
         if (listUser != null && !listUser.isEmpty()) {
             response.sendRedirect("configuracion/indexConfig.jsp");
-        }else{
+        } else {
             request.getSession().setAttribute("ex", new Exception("El usuario no existe en el sistema"));
             response.sendRedirect("login.jsp");
         }
@@ -191,23 +190,24 @@ public class Controlador extends HttpServlet {
     }
 
     public void modificarPlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        Plan plan = new Plan();
-//        plan.setIdPlan(Integer.valueOf(request.getParameter("idPlan")));
-//        plan.setNombrePlan(request.getParameter("nombre"));
-//        plan.setCosto(Integer.valueOf(request.getParameter("costo")));
-//        plan.setDescripcion(request.getParameter("descripcion"));
-//        plan.setDias(Integer.valueOf(request.getParameter("dias")));
-//        plan.setNoches(Integer.valueOf(request.getParameter("noches")));
-//        Parque parque = new Parque();
-//        parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
+        Plan plan = new Plan();
+        plan.setIdPlan(Integer.valueOf(request.getParameter("idPlan")));
+        plan.setNombrePlan(request.getParameter("nombre"));
+        plan.setCosto(Integer.valueOf(request.getParameter("costo")));
+        plan.setDescripcion(request.getParameter("descripcion"));
+        plan.setDias(Integer.valueOf(request.getParameter("dias")));
+        plan.setNoches(Integer.valueOf(request.getParameter("noches")));
+        Parque parque = new Parque();
+        parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
 //        plan.setParque(parque);
 //        PlanDAO planDAO = new PlanDAO();
 //        planDAO.modificar(plan);
-//        response.sendRedirect("configuracion/ConfiguracionPlanes.jsp");
+        response.sendRedirect("configuracion/ConfiguracionPlanes.jsp");
     }
 //    
+
     public void crearPlan(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        
+
         Plan plan = new Plan();
         plan.setNombrePlan(request.getParameter("nombre"));
         plan.setCosto(Integer.valueOf(request.getParameter("costo")));
@@ -216,29 +216,36 @@ public class Controlador extends HttpServlet {
         plan.setNoches(Integer.valueOf(request.getParameter("noches")));
         Parque parque = new Parque();
         parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
-        plan.setParque(parque);
+        plan.setIdParque(parque);
         Hotel hotel = new Hotel();
         hotel.setIdHotel(Integer.valueOf(request.getParameter("idHotel")));
-        plan.setHotel(hotel);
-        planFacadeLocal.create(plan);
-        
-        String nombreImg = request.getParameter("photo");
+        plan.setIdHotel(hotel);
+        plan = planFacadeLocal.merge(plan);
         InputStream inputStream = null; // input stream of the upload file
         // obtains the upload file part in this multipart request
         Part filePart = request.getPart("photo");
         if (filePart != null) {
             inputStream = filePart.getInputStream();
         }
+        Archivo archivo = null;
         if (inputStream != null) {
-            Archivo archivo = new Archivo();
-            archivo.setNombre(nombreImg);
+            archivo = new Archivo();
+            archivo.setNombre(filePart.getSubmittedFileName());
             archivo.setImg(convertirInputStreamAByte(inputStream));
-            archivoFacadeLocal.create(archivo);
+            archivo.setIdPlan(plan);
         }
-        
+        archivoFacadeLocal.create(archivo);
+
         response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
     }
-//    
+
+    public void eliminarPlan(Integer id,HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Plan plan = planFacadeLocal.find(id);
+        planFacadeLocal.remove(plan);
+        request.getSession().removeAttribute("idPlan");
+        request.getSession().removeAttribute("eliminarPlan");
+        response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
+    }
 
     public void crearProveedor(HttpServletRequest request, HttpServletResponse response) throws IOException {
 //        ProveedorDAO proveedorDAO = new ProveedorDAO();
@@ -329,7 +336,6 @@ public class Controlador extends HttpServlet {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
 
     }
 
@@ -339,5 +345,15 @@ public class Controlador extends HttpServlet {
             sb.append((char) ((int) (Math.random() * 26) + 97));
         }
         return sb.toString();
+    }
+
+    private void registroParcialCliente(Integer idCliente, HttpServletRequest request, HttpServletResponse response) throws IOException, GeneralSecurityException {
+        Usuario usuario = usuarioFacadeLocal.find(idCliente);
+        ControladorEnvioCorreo.envioCorreo(usuario);
+        usuario.setEstado(EstadoEnum.ACEPTADO.getValor());
+        usuarioFacadeLocal.edit(usuario);
+        request.getSession().removeAttribute("idCliente");
+        request.getSession().removeAttribute("envioCorreo");
+        response.sendRedirect("configuracion/cliente/configuracionClientes.jsp");
     }
 }

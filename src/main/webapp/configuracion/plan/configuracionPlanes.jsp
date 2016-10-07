@@ -4,6 +4,7 @@
     Author     : cristian.ordonez
 --%>
 
+<%@page import="co.com.uniminuto.util.AccionesEnum"%>
 <%@page import="java.util.List"%>
 <%@page import="co.com.uniminuto.util.Conexion"%>
 <%@page import="java.util.LinkedList"%>
@@ -64,11 +65,15 @@
                             <th>Descripcion</th> 
                             <th>Costo</th>
                             <th>Dias</th>
-                            <th>Noches</th> 
+                            <th>Noches</th>
+                            <th>Parque</th>
+                            <th>Hotel</th>
+                            <th></th>
+                            <th></th>
                             <th></th>
                         </tr>
                         <%
-                            List<Plan> lp = Conexion.getPlanes();
+                            List<Plan> lp = new Conexion(AccionesEnum.ConsultarPlanes).getLpla();
                             for (Plan plan : lp) {
                                 out.println("<tr>");
                                 out.println("<td>" + plan.getNombrePlan() + "</td>");
@@ -76,15 +81,20 @@
                                 out.println("<td>" + plan.getCosto() + "</td>");
                                 out.println("<td>" + plan.getDias() + "</td>");
                                 out.println("<td>" + plan.getNoches() + "</td>");
-//                                out.println("<td align='center'><table><tr><td>" + plan.getParque().getParque() + "</td><td><img src='../img/" + plan.getParque().getImg() + "'></img></td></tr></table></td>");
-                                out.println("<td><a href='datosModificarPlan.jsp?id=" + plan.getIdPlan()
-                                        + "&nombre=" + plan.getNombrePlan()
+                                out.println("<td>" + plan.getIdParque().getParque()+ "</td>");
+                                out.println("<td>" + plan.getIdHotel().getNombre()+ "</td>");
+                                out.println("<td align='center'><img src='data:image/jpg;base64," + plan.getListaArchivo().get(0).getImgString() + "' alt='IMG DESC'></img></td>");
+                                out.println("<td><a href='datosModificarPlan.jsp?idPlan=" + plan.getIdPlan()
+                                        + "&nombrePlan=" + plan.getNombrePlan()
                                         + "&descripcion=" + plan.getDescripcion()
                                         + "&costo=" + plan.getCosto()
                                         + "&dias=" + plan.getDias()
                                         + "&noches=" + plan.getNoches()
-                                        + "&idParque=" + plan.getParque().getIdParque() 
-                                        + "&parque="+plan.getParque().getParque()+"'><img src='../../img/modificar.jpg'/></a></td>");
+                                        + "&idParque=" + plan.getIdParque().getIdParque() 
+                                        + "&parque="+plan.getIdParque().getParque()
+                                        + "&idHotel="+plan.getIdHotel().getIdHotel()
+                                        + "&hotel="+plan.getIdHotel().getIdHotel()+"'><img src='../../img/modificar.jpg'/></a></td>");
+                                out.println("<td><a href='datosModificarPlan.jsp?idPlan=" + plan.getIdPlan() +"'><img src='../../img/eliminar.jpg'/></a></td>");
                                 out.println("</tr>");
                             }
                         %>

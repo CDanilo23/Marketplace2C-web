@@ -102,9 +102,6 @@
                                         <li>
                                             <a href="parque/CrearParque.jsp">Crear nuevo Parque</a>
                                         </li>
-                                        <li>
-                                            <a href="parque/configuracion/EliminarParque.jsp">Eliminar Parque</a>
-                                        </li>
                                     </ul>
                                     <!-- /.nav-second-level -->
                                 </li>
@@ -116,9 +113,6 @@
                                         </li>
                                         <li>
                                             <a href="hotel/CrearHotel.jsp">Crear nuevo hotel</a>
-                                        </li>
-                                        <li>
-                                            <a href="hotel/EliminarHotel.jsp">Eliminar hotel</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-second-level -->

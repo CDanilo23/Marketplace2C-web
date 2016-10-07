@@ -50,7 +50,7 @@ public class Hotel implements Serializable {
     @Size(max = 45)
     @Column(name = "DIRECCION")
     private String direccion;
-    @OneToMany(mappedBy = "hotel")
+    @OneToMany(mappedBy = "idHotel")
     private List<Plan> planList;
     @Column(name = "NIVEL")
     private Integer nivel;

@@ -6,8 +6,10 @@
 package co.com.uniminuto.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,8 +22,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "plan")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Plan.findAll", query = "SELECT p FROM Plan p"),
     @NamedQuery(name = "Plan.findByIdPlan", query = "SELECT p FROM Plan p WHERE p.idPlan = :idPlan"),
@@ -39,11 +38,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Plan.findByDias", query = "SELECT p FROM Plan p WHERE p.dias = :dias"),
     @NamedQuery(name = "Plan.findByNoches", query = "SELECT p FROM Plan p WHERE p.noches = :noches")})
 public class Plan implements Serializable {
-
-    @OneToMany(mappedBy = "idPlan")
-    private List<UsuarioPlan> usuarioPlanList;
-    @OneToMany(mappedBy = "idPlan")
-    private List<Archivo> archivoList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -56,22 +50,22 @@ public class Plan implements Serializable {
     private String nombrePlan;
     @Column(name = "COSTO")
     private Integer costo;
-    @Size(max = 45)
+    @Size(max = 255)
     @Column(name = "DESCRIPCION")
     private String descripcion;
     @Column(name = "DIAS")
     private Integer dias;
     @Column(name = "NOCHES")
     private Integer noches;
-  
-    @OneToMany(mappedBy = "idPlan")
-    private List<ClientePlan> clientePlanList;
     @JoinColumn(name = "ID_PARQUE", referencedColumnName = "ID_PARQUE")
     @ManyToOne
-    private Parque parque;
+    private Parque idParque;
     @JoinColumn(name = "ID_HOTEL", referencedColumnName = "ID_HOTEL")
     @ManyToOne
-    private Hotel hotel;
+    private Hotel idHotel;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPlan")
+    private List<Archivo> listaArchivo;
 
     public Plan() {
     }
@@ -128,30 +122,20 @@ public class Plan implements Serializable {
         this.noches = noches;
     }
 
-
-    @XmlTransient
-    public List<ClientePlan> getClientePlanList() {
-        return clientePlanList;
+    public Parque getIdParque() {
+        return idParque;
     }
 
-    public void setClientePlanList(List<ClientePlan> clientePlanList) {
-        this.clientePlanList = clientePlanList;
+    public void setIdParque(Parque idParque) {
+        this.idParque = idParque;
     }
 
-    public Parque getParque() {
-        return parque;
+    public Hotel getIdHotel() {
+        return idHotel;
     }
 
-    public void setParque(Parque parque) {
-        this.parque = parque;
-    }
-
-    public Hotel getHotel() {
-        return hotel;
-    }
-
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
+    public void setIdHotel(Hotel idHotel) {
+        this.idHotel = idHotel;
     }
 
     @Override
@@ -176,25 +160,15 @@ public class Plan implements Serializable {
 
     @Override
     public String toString() {
-        return "co.com.uniminuto.ejb.Plan[ idPlan=" + idPlan + " ]";
+        return "co.com.uniminuto.entities.Plan[ idPlan=" + idPlan + " ]";
     }
 
-    @XmlTransient
-    public List<UsuarioPlan> getUsuarioPlanList() {
-        return usuarioPlanList;
+    public List<Archivo> getListaArchivo() {
+        return listaArchivo;
     }
 
-    public void setUsuarioPlanList(List<UsuarioPlan> usuarioPlanList) {
-        this.usuarioPlanList = usuarioPlanList;
-    }
-
-    @XmlTransient
-    public List<Archivo> getArchivoList() {
-        return archivoList;
-    }
-
-    public void setArchivoList(List<Archivo> archivoList) {
-        this.archivoList = archivoList;
+    public void setListaArchivo(List<Archivo> listaArchivo) {
+        this.listaArchivo = listaArchivo;
     }
     
 }

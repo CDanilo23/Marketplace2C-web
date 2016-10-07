@@ -9,6 +9,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -16,8 +18,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -25,27 +28,32 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "archivo")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Archivo.findAll", query = "SELECT a FROM Archivo a"),
     @NamedQuery(name = "Archivo.findByIdArchivo", query = "SELECT a FROM Archivo a WHERE a.idArchivo = :idArchivo"),
-    @NamedQuery(name = "Archivo.findByNombre", query = "SELECT a FROM Archivo a WHERE a.nombre = :nombre")})
+    @NamedQuery(name = "Archivo.findByNombre", query = "SELECT a FROM Archivo a WHERE a.nombre = :nombre"),
+    @NamedQuery(name = "Archivo.findByIdPlan", query = "SELECT a FROM Archivo a WHERE a.idPlan = :idPlan")})
 public class Archivo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "ID_ARCHIVO")
     private Integer idArchivo;
     @Size(max = 45)
     @Column(name = "NOMBRE")
     private String nombre;
-    @JoinColumn(name = "ID_PLAN", referencedColumnName = "ID_PLAN")
-    @ManyToOne
-    private Plan idPlan;
     @Lob
     @Column(name = "IMG")
     private byte[] img;
+    @Transient
+    private String imgString;
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "Int_IdPlan", referencedColumnName = "ID_PLAN")
+    private Plan idPlan;
 
     public Archivo() {
     }
@@ -78,6 +86,14 @@ public class Archivo implements Serializable {
         this.img = img;
     }
 
+    public Plan getIdPlan() {
+        return idPlan;
+    }
+
+    public void setIdPlan(Plan idPlan) {
+        this.idPlan = idPlan;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -103,12 +119,12 @@ public class Archivo implements Serializable {
         return "co.com.uniminuto.entities.Archivo[ idArchivo=" + idArchivo + " ]";
     }
 
-    public Plan getIdPlan() {
-        return idPlan;
+    public String getImgString() {
+        return imgString;
     }
 
-    public void setIdPlan(Plan idPlan) {
-        this.idPlan = idPlan;
+    public void setImgString(String imgString) {
+        this.imgString = imgString;
     }
     
 }

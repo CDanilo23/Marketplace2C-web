@@ -4,10 +4,12 @@
     Author     : cristian.ordonez
 --%>
 
-<%@page import="co.com.uniminuto.modelo.Parque"%>
-<%@page import="co.com.uniminuto.dao.ParqueDAO"%>
+<%@page import="co.com.uniminuto.entities.Hotel"%>
+<%@page import="co.com.uniminuto.util.Conexion"%>
+<%@page import="co.com.uniminuto.util.AccionesEnum"%>
+<%@page import="co.com.uniminuto.entities.Parque"%>
 <%@page import="java.util.List"%>
-<%@page import="co.com.uniminuto.modelo.Plan"%>
+<%@page import="co.com.uniminuto.entities.Plan"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,16 +20,16 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <!-- Bootstrap Core CSS -->
-        <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- MetisMenu CSS -->
-        <link href="../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+        <link href="../../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+        <link href="../../dist/css/sb-admin-2.css" rel="stylesheet">
 
         <!-- Custom Fonts -->
-        <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="../../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
         <title>Modificar Plan</title>
     </head>
     <body>
@@ -58,51 +60,66 @@
                 <caption><h1>Configuracion Planes</h1></caption>
                 <br>
                 <div class="panel-group">
-                        <form action="../Controlador" method="post">
+                    <form action="../../Controlador" method="post">
+                        <div class="form-group">
+                            <input class="form-control" name='nombre' type="text" placeholder='Nombre Plan' value="<%=((Plan) request.getSession().getAttribute("plan")).getNombrePlan()%>"><br>
+                            <input class="form-control" name='costo' type="text" placeholder='Costo' value="<%=((Plan) request.getSession().getAttribute("plan")).getCosto()%>"><br>
+                            <input class="form-control" name='descripcion' type="text" placeholder='Descripcion'><br>
+                            <input class="form-control" name='dias' type="text" placeholder='Dias'><br>
+                            <input class="form-control" name='noches' type="text" placeholder='Noches'><br>
                             <div class="form-group">
-                                <%
-                                    ParqueDAO parqueDAO = new ParqueDAO();
-                                    List<Parque> lista = parqueDAO.listarParques();
-                                    Plan plan = (Plan) session.getAttribute("plan");
-                                    out.println("<label>Nombre Plan</label><br>");
-                                    out.println("<input name='nombre' value=" + plan.getNombrePlan() + " /><br>");
-                                    out.println("<label>Costo</label><br>");
-                                    out.println("<input name='costo' value=" + plan.getCosto() + " /><br>");
-                                    out.println("<label>Descripcion</label><br>");
-                                    out.println("<input name='descripcion' value=" + plan.getDescripcion() + " /><br>");
-                                    out.println("<label>Dias</label><br>");
-                                    out.println("<input name='dias' value=" + plan.getDias() + " /><br>");
-                                    out.println("<label>Noches</label><br>");
-                                    out.println("<input name='noches' value=" + plan.getNoches() + " /><br>");
-                                    out.println("<label>Parque</label><br>");
-                                    out.println("<select class='form-control' name='idParque'><br>"); 
-                                    out.println("<option value="+ plan.getParque().getIdParque() + ">"+ plan.getParque().getParque() +"</option>");
-                                    for (Parque p : lista) {
-                                        if(plan.getParque().getIdParque()!=p.getIdParque()){
-                                             out.println("<option value="+ p.getIdParque() + ">"+ p.getParque() +"</option>");
+                                <label>Parque</label><br>
+                                <select class="form-control" name="idParque">
+                                    <%
+                                        List<Parque> lista = new Conexion(AccionesEnum.ConsultarParques).getLp();
+                                        Plan plan = (Plan) request.getSession().getAttribute("plan");
+                                        for (Parque p : lista) {
+                                            if (p.getIdParque() == plan.getIdParque().getIdParque()) {
+                                                continue;
+                                            } else {
+                                                out.println("<option value='" + p.getIdParque() + "'><" + p.getParque() + "></option>");
+                                            }
                                         }
-                                    }
-                                    out.println("</select>");
-                                    out.println("<input type='hidden' name='idPlan' value=" + plan.getIdPlan() + " />");
-                                %>
-                                
+                                    %>
+                                </select>
+                            </div><br>
+                            <div class="form-group">
+                                <label>Hotel</label><br>
+                                <select class="form-control" name="idHotel">
+                                    <%
+                                        Plan plan1 = (Plan) request.getSession().getAttribute("plan");
+                                        List<Hotel> lista1 = new Conexion(AccionesEnum.ConsultarHoteles).getLh();
+                                        for (Hotel h : lista1) {
+                                            if (h.getIdHotel() == plan1.getIdHotel().getIdHotel()) {
+                                                continue;
+                                            } else {
+                                                out.println("<option value='" + h.getIdHotel() + "'><" + h.getNombre() + "></option>");
+                                            }
+                                        }
+                                    %>
+                                </select>
+                            </div><br>
+                            <div class="form-group">
+                                <label>Imagen plan</label>
+                                <input class="form-control" type="file" name="photo" size="50">
                             </div>
-                            <input type="hidden" name="accion" value="ModificarPlan" /><br>
-                            <input type="submit" class="btn btn-default" value="Modificar"/>
-                        </form>
+                        </div>
+                        <input type="hidden" name="accion" value="ModificarPlan" /><br>
+                        <input type="submit" class="btn btn-default" value="Modificar"/>
+                    </form>
                 </div>
             </div>
         </div>
-                                 <!-- jQuery -->
-        <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+        <!-- jQuery -->
+        <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 
         <!-- Bootstrap Core JavaScript -->
-        <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
         <!-- Metis Menu Plugin JavaScript -->
-        <script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+        <script src="../../bower_components/metisMenu/dist/metisMenu.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="../dist/js/sb-admin-2.js"></script>
+        <script src="../../dist/js/sb-admin-2.js"></script>
     </body>
 </html>
