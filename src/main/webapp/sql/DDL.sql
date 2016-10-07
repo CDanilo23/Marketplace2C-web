@@ -20,3 +20,5 @@ alter table marketplace.archivo drop column ruta;
 alter table marketplace.parque  change id_parque id_parque  int AUTO_INCREMENT;
 /** se agrega autoincrement a tabla archivo*/
 alter table marketplace.archivo modify column id_archivo int auto_increment;
+
+
