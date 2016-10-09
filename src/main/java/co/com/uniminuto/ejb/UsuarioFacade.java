@@ -9,8 +9,6 @@ import co.com.uniminuto.entities.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -19,30 +17,22 @@ import javax.persistence.PersistenceContext;
  * @author cristian.ordonez
  */
 @Stateless(name = "UsuarioFacade", mappedName = "UsuarioFacadeBean")
-public class UsuarioFacade implements UsuarioFacadeLocal {
+public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFacadeLocal {
 
     @PersistenceContext(unitName = "Marketplace-PU")
     private EntityManager em;
 
     @Override
-    public void create(Usuario usuario) {
-        em.persist(usuario);
+    protected EntityManager getEntityManager() {
+        return em;
     }
 
-    @Override
-    public void edit(Usuario usuario) {
-        em.merge(usuario);
+    public UsuarioFacade() {
+        super(Usuario.class);
     }
 
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void remove(Usuario usuario) {
-        em.remove(usuario);
-    }
-
-    @Override
-    public Usuario find(Object id) {
-        return em.find(Usuario.class, id);
+    public Usuario merge(Usuario usuario) {
+        return em.merge(usuario);
     }
 
     @Override
@@ -64,9 +54,9 @@ public class UsuarioFacade implements UsuarioFacadeLocal {
     @Override
     public List<Usuario> findUserByUserAndName(String user, String name) {
         List<Usuario> lu = new ArrayList<>();
-        try{
-            lu = em.createNamedQuery("Usuario.findByUsuarioAndName",Usuario.class).setParameter("usuario", user).setParameter("nombre", name).getResultList();
-        }catch(Exception e){
+        try {
+            lu = em.createNamedQuery("Usuario.findByUsuarioAndName", Usuario.class).setParameter("usuario", user).setParameter("nombre", name).getResultList();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return lu;

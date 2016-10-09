@@ -14,9 +14,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
@@ -51,7 +51,7 @@ public class Archivo implements Serializable {
     @Transient
     private String imgString;
     
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name = "Int_IdPlan", referencedColumnName = "ID_PLAN")
     private Plan idPlan;
 

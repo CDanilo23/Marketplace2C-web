@@ -1,11 +1,10 @@
 <%-- 
-    Document   : CrearParque
-    Created on : 12/09/2016, 02:01:51 PM
+    Document   : CrearProveedor
+    Created on : 13/09/2016, 09:00:51 PM
     Author     : cristian.ordonez
 --%>
 
-<%@page import="co.com.uniminuto.util.CombosUtil"%>
-<%@page import="co.com.uniminuto.entities.Ubicacion"%>
+<%@page import="co.com.uniminuto.util.TipoDocumentoEnum"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -28,7 +27,7 @@
 
         <!-- Custom Fonts -->
         <link href="../../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <title>Crear Parque</title>
+        <title>Crear Proveedor</title>
     </head>
     <body>
         <div id="wrapper">
@@ -36,16 +35,13 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="../indexConfig.jsp"><i class="fa fa-dashboard fa-fw"></i> Index</a>
+                            <a href="indexConfig.jsp"><i class="fa fa-dashboard fa-fw"></i> Index</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion <span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion proveedores <span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="ConfiguracionParques.jsp">Configuracion Parques</a>
-                                </li>
-                                <li>
-                                    <a href="EliminarParque.jsp">Eliminar Parque</a>
+                                    <a href="configuracionProveedores.jsp">Consultar proveedores</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -56,40 +52,36 @@
             </div>
             <div id="page-wrapper">
                 <br>    
-                <caption><h1>Configuracion Parques</h1></caption>
+                <caption><h1>Configuracion Proveedores</h1></caption>
                 <br>
                 <div class="panel-group">
                     <form action="../../Controlador" method="post">
                         <div class="form-group">
-                            <input name='nombreParque' class='form-control' type='text' placeholder='Nombre Parque'><br>
+                            <input class="form-control" name='usuario' type="text" placeholder="Usuario"><br>
+                            <input class="form-control" name='empresa' type="text" placeholder="Empresa"> <br>
+                            <input class="form-control" name='nombreProveedor' type="text" placeholder="Nombre proveedor"><br>
+                            <input class="form-control" name='password' type="password" placeholder="Password"><br>
                             <div class="form-group">
-                                <label class="alert-info">Pais</label><br>
-                                <select class='form-control' name="paisParque">
+                                <label>Tipo Documento</label><br>
+                                <select class="form-control" name="tipoDocumento">
                                     <%
-                                        List<Ubicacion> lpa = CombosUtil.getPaises();
-                                        for (Ubicacion u : lpa) {
+                                        for (TipoDocumentoEnum tp : TipoDocumentoEnum.values()) {
                                     %>
-                                    <option value="<%=u.getPais()%>"><%=u.getPais()%></option>
+                                    <option value="<%=tp.getValor()%>"><%=tp.getDescripcion()%></option>
                                     <%
                                         }
                                     %>
                                 </select>
                             </div>
-                            <div class="form-group"> 
-                                <label class="alert-info">Ubicacion</label><br>
-                                <select class='form-control' name="idUbicacion">
-                                    <%
-                                        List<Ubicacion> lu = CombosUtil.getUbicaciones();
-                                        for (Ubicacion u : lu) {
-                                    %>
-                                    <option value="<%=u.getIdUbicacion()%>"><%=u.getCiudad()%></option>
-                                    <%
-                                        }
-                                    %>
-                                </select>
+                            <input class="form-control" name='numDocumento' type="text" placeholder="Numero de documento"><br>
+                            <input class="form-control" name='direccion' type="text" placeholder="Direccion"><br>
+                            <input class="form-control" name='telefono' type="text" placeholder="Telefono"><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">@</span>
+                                <input name="correo" id="email" type="email" class="form-control" placeholder="Correo"/>
                             </div>
                         </div>
-                        <input type="hidden" name="accion" value="CrearParque" /><br>
+                        <input type="hidden" name="accion" value="CrearProveedor" /><br>
                         <input type="submit" class="btn btn-default" value="Crear" />
                     </form>
                 </div>
@@ -108,3 +100,4 @@
         <script src="../../dist/js/sb-admin-2.js"></script>
     </body>
 </html>
+

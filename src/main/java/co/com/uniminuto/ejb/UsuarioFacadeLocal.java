@@ -19,6 +19,8 @@ public interface UsuarioFacadeLocal {
     void create(Usuario usuario);
 
     void edit(Usuario usuario);
+    
+    Usuario merge(Usuario usuario);
 
     void remove(Usuario usuario);
 
@@ -29,4 +31,5 @@ public interface UsuarioFacadeLocal {
     List<Usuario> findUserByIdAndPass(String user, String password);
     
     List<Usuario> findUserByUserAndName(String user, String name);
+
 }

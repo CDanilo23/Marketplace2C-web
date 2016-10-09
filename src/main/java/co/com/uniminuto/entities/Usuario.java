@@ -75,8 +75,7 @@ public class Usuario implements Serializable {
     @Size(max = 20)
     @Column(name = "CONTRASENA")
     private String contrasena;
-    @OneToMany(mappedBy = "idUsuario")
-    private List<Proveedor> proveedorList;
+    
     @JoinColumn(name = "ROL", referencedColumnName = "ID_ROL")
     @ManyToOne
     private Rol rol;
@@ -112,14 +111,7 @@ public class Usuario implements Serializable {
         this.contrasena = contrasena;
     }
 
-    @XmlTransient
-    public List<Proveedor> getProveedorList() {
-        return proveedorList;
-    }
-
-    public void setProveedorList(List<Proveedor> proveedorList) {
-        this.proveedorList = proveedorList;
-    }
+   
 
     public Rol getRol() {
         return rol;

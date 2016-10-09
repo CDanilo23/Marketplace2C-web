@@ -21,6 +21,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -64,8 +65,8 @@ public class Plan implements Serializable {
     @ManyToOne
     private Hotel idHotel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPlan")
-    private List<Archivo> listaArchivo;
+    @Transient
+    private Archivo archivo;
 
     public Plan() {
     }
@@ -163,12 +164,20 @@ public class Plan implements Serializable {
         return "co.com.uniminuto.entities.Plan[ idPlan=" + idPlan + " ]";
     }
 
-    public List<Archivo> getListaArchivo() {
-        return listaArchivo;
+//    public List<Archivo> getListaArchivo() {
+//        return listaArchivo;
+//    }
+//
+//    public void setListaArchivo(List<Archivo> listaArchivo) {
+//        this.listaArchivo = listaArchivo;
+//    }
+
+    public Archivo getArchivo() {
+        return archivo;
     }
 
-    public void setListaArchivo(List<Archivo> listaArchivo) {
-        this.listaArchivo = listaArchivo;
+    public void setArchivo(Archivo archivo) {
+        this.archivo = archivo;
     }
     
 }

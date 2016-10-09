@@ -93,7 +93,7 @@
                                 </select>
                             </div><br>
                             <div class="form-group">
-                                <label>Imagen plan</label>
+                                <label>Imagen plan</label><label class="alert-info">Tamaño de imagen 180x140 px</label>
                                 <input class="form-control" type="file" name="photo" size="50">
                             </div>
                         </div>

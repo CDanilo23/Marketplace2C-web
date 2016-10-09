@@ -50,6 +50,30 @@ public class CombosUtil {
          }
          return lu;
     }
+    public static List<Ubicacion> getPaises(){
+         try {
+             Class.forName("com.mysql.jdbc.Driver");
+             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/marketplace", "root", "root");
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery("SELECT distinct * FROM ubicacion group by pais");
+             lu = new ArrayList<>();
+             Ubicacion ubi;
+             while(rs.next()){
+                 ubi = new Ubicacion();
+                 ubi.setPais(rs.getString(3));
+                 lu.add(ubi);
+             }
+         } catch (ClassNotFoundException | SQLException ex) {
+             Logger.getLogger(CombosUtil.class.getName()).log(Level.SEVERE, null, ex);
+         } finally{
+             try {
+                 con.close();
+             } catch (SQLException ex) {
+                 Logger.getLogger(CombosUtil.class.getName()).log(Level.SEVERE, null, ex);
+             }
+         }
+         return lu;
+    }
     
     public static LinkedList<NivelHotelDTO>  getNivelesHotel(){
         LinkedList<NivelHotelDTO> ln = new LinkedList<>();

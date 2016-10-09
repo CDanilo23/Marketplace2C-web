@@ -38,7 +38,7 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="indexConfig.jsp"><i class="fa fa-dashboard fa-fw"></i> Index</a>
+                            <a href="../indexConfig.jsp"><i class="fa fa-dashboard fa-fw"></i> Index</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion Planes <span class="fa arrow"></span></a>
@@ -46,6 +46,9 @@
 
                                 <li>
                                     <a href="crearPlan.jsp">Crear nuevo Plan</a>
+                                </li>
+                                <li>
+                                    <a href="configuracionPlanes.jsp">Consultar planes</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -60,51 +63,57 @@
                 <caption><h1>Configuracion Planes</h1></caption>
                 <br>
                 <div class="panel-group">
-                    <form action="../../Controlador" method="post">
+                    <form action="../../Controlador" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <input class="form-control" name='nombre' type="text" placeholder='Nombre Plan' value="<%=((Plan) request.getSession().getAttribute("plan")).getNombrePlan()%>"><br>
                             <input class="form-control" name='costo' type="text" placeholder='Costo' value="<%=((Plan) request.getSession().getAttribute("plan")).getCosto()%>"><br>
-                            <input class="form-control" name='descripcion' type="text" placeholder='Descripcion'><br>
-                            <input class="form-control" name='dias' type="text" placeholder='Dias'><br>
-                            <input class="form-control" name='noches' type="text" placeholder='Noches'><br>
+                            <input class="form-control" name='descripcion' type="text" placeholder='Descripcion' value="<%=((Plan) request.getSession().getAttribute("plan")).getDescripcion()%>"><br>
+                            <input class="form-control" name='dias' type="text" placeholder='Dias' value="<%=((Plan) request.getSession().getAttribute("plan")).getDias()%>"><br>
+                            <input class="form-control" name='noches' type="text" placeholder='Noches' value="<%=((Plan) request.getSession().getAttribute("plan")).getNoches()%>"><br>
                             <div class="form-group">
                                 <label>Parque</label><br>
                                 <select class="form-control" name="idParque">
                                     <%
                                         List<Parque> lista = new Conexion(AccionesEnum.ConsultarParques).getLp();
                                         Plan plan = (Plan) request.getSession().getAttribute("plan");
+                                    %>
+                                    <option value="<%=plan.getIdParque().getIdParque()%>"><%=plan.getIdParque().getParque()%></option>");
+                                    <%
                                         for (Parque p : lista) {
                                             if (p.getIdParque() == plan.getIdParque().getIdParque()) {
-                                                continue;
-                                            } else {
-                                                out.println("<option value='" + p.getIdParque() + "'><" + p.getParque() + "></option>");
+                                                     continue;
+                                                 } else {%>
+                                    <option value="<%=p.getIdParque()%>"><%=p.getParque()%></option>");
+                                    <%
                                             }
                                         }
                                     %>
                                 </select>
-                            </div><br>
+                            </div>
                             <div class="form-group">
                                 <label>Hotel</label><br>
                                 <select class="form-control" name="idHotel">
                                     <%
-                                        Plan plan1 = (Plan) request.getSession().getAttribute("plan");
                                         List<Hotel> lista1 = new Conexion(AccionesEnum.ConsultarHoteles).getLh();
+                                        Plan plan1 = (Plan) request.getSession().getAttribute("plan");
+                                    %>
+                                    <option value="<%=plan1.getIdHotel().getIdHotel()%>"><%=plan1.getIdHotel().getNombre()%></option>
+                                    <%
                                         for (Hotel h : lista1) {
                                             if (h.getIdHotel() == plan1.getIdHotel().getIdHotel()) {
                                                 continue;
                                             } else {
-                                                out.println("<option value='" + h.getIdHotel() + "'><" + h.getNombre() + "></option>");
+                                    %>
+                                    <option value="<%=h.getIdHotel()%>"><%=h.getNombre()%></option>
+                                    <%
                                             }
                                         }
                                     %>
                                 </select>
-                            </div><br>
-                            <div class="form-group">
-                                <label>Imagen plan</label>
-                                <input class="form-control" type="file" name="photo" size="50">
                             </div>
                         </div>
                         <input type="hidden" name="accion" value="ModificarPlan" /><br>
+                        <input type="hidden" name="idPlan" value="<%=((Plan) request.getSession().getAttribute("plan")).getIdPlan()%>" /><br>
                         <input type="submit" class="btn btn-default" value="Modificar"/>
                     </form>
                 </div>

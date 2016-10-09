@@ -121,13 +121,10 @@
                                     <a href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion Proveedores <span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li>
-                                            <a href="proveedor/ConfiguracionProveedores.jsp">Consulta proveedores</a>
+                                            <a href="proveedor/configuracionProveedores.jsp">Consulta proveedores</a>
                                         </li>
                                         <li>
-                                            <a href="proveedor/CrearProveedor.jsp">Crear nuevo proveedor</a>
-                                        </li>
-                                        <li>
-                                            <a href="proveedor/EliminarProveedor.jsp">Eliminar proveedor</a>
+                                            <a href="proveedor/crearProveedor.jsp">Crear nuevo proveedor</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-second-level -->

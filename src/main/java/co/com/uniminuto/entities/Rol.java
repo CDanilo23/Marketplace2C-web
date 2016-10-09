@@ -43,10 +43,6 @@ public class Rol implements Serializable {
     @Size(max = 45)
     @Column(name = "NOMBRE")
     private String nombre;
-    @OneToMany(mappedBy = "idRol")
-    private List<Cliente> clienteList;
-    @OneToMany(mappedBy = "idRol")
-    private List<Proveedor> proveedorList;
     @OneToMany(mappedBy = "rol")
     private List<Usuario> usuarioList;
 
@@ -71,24 +67,6 @@ public class Rol implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    @XmlTransient
-    public List<Cliente> getClienteList() {
-        return clienteList;
-    }
-
-    public void setClienteList(List<Cliente> clienteList) {
-        this.clienteList = clienteList;
-    }
-
-    @XmlTransient
-    public List<Proveedor> getProveedorList() {
-        return proveedorList;
-    }
-
-    public void setProveedorList(List<Proveedor> proveedorList) {
-        this.proveedorList = proveedorList;
     }
 
     @XmlTransient
@@ -122,7 +100,7 @@ public class Rol implements Serializable {
 
     @Override
     public String toString() {
-        return "co.com.uniminuto.ejb.Rol[ idRol=" + idRol + " ]";
+        return "co.com.uniminuto.entities.Rol[ idRol=" + idRol + " ]";
     }
     
 }

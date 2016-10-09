@@ -5,7 +5,6 @@
  */
 package co.com.uniminuto.controlador;
 
-import static co.com.uniminuto.controlador.ControladorImagenes.convertirInputStreamAByte;
 import co.com.uniminuto.ejb.ArchivoFacadeLocal;
 import co.com.uniminuto.ejb.HotelFacadeLocal;
 import co.com.uniminuto.ejb.ParqueFacadeLocal;
@@ -19,8 +18,11 @@ import co.com.uniminuto.entities.Rol;
 import co.com.uniminuto.entities.Ubicacion;
 import co.com.uniminuto.entities.Usuario;
 import co.com.uniminuto.util.ControladorEnvioCorreo;
+import co.com.uniminuto.util.ConvertidorBlob;
 import co.com.uniminuto.util.EstadoEnum;
+import co.com.uniminuto.util.GeneradorMD5;
 import co.com.uniminuto.util.RolEnum;
+import co.com.uniminuto.util.TipoDocumentoEnum;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -88,10 +90,16 @@ public class Controlador extends HttpServlet {
         String accion = request.getParameter("accion");
         Integer idCliente = (Integer) request.getSession().getAttribute("idCliente");
         String envioCorreo = (String) request.getSession().getAttribute("envioCorreo");
+        //variables para eliminar plan
         Integer idPlan = (Integer) request.getSession().getAttribute("idPlan");
         String eliminarPlan = (String) request.getSession().getAttribute("eliminarPlan");
+        //variables para eliminar proveedor
+        Integer idProveedor = (Integer) request.getSession().getAttribute("idProveedor");
         if (idPlan != null && eliminarPlan != null) {
-            this.eliminarPlan(idPlan,request,response);
+            this.eliminarPlan(idPlan, request, response);
+        }
+        if (idProveedor != null) {
+            this.eliminarProveedor(idProveedor, request, response);
         }
         if (envioCorreo != null && envioCorreo.equals("envioCorreo")) {
             this.registroParcialCliente(idCliente, request, response);
@@ -176,12 +184,10 @@ public class Controlador extends HttpServlet {
         hotelFacadeLocal.create(hotel);
         response.sendRedirect("configuracion/hotel/ConfiguracionHoteles.jsp");
     }
-//    
 
     public void modificarHotel(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
+        Hotel hotel = hotelFacadeLocal.find(((Hotel) request.getAttribute("hotel")).getIdHotel());
         request.getSession().removeAttribute("hotel");
-        Hotel hotel = new Hotel();
-        hotel.setIdHotel(Integer.valueOf(request.getParameter("id")));
         hotel.setNombre(request.getParameter("nombre"));
         hotel.setNivel(Integer.valueOf(request.getParameter("nivel")));
         hotel.setDireccion(request.getParameter("direccion"));
@@ -189,9 +195,9 @@ public class Controlador extends HttpServlet {
         response.sendRedirect("configuracion/hotel/ConfiguracionHoteles.jsp");
     }
 
-    public void modificarPlan(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Plan plan = new Plan();
-        plan.setIdPlan(Integer.valueOf(request.getParameter("idPlan")));
+    public void modificarPlan(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Plan plan = planFacadeLocal.find(Integer.valueOf(request.getParameter("idPlan")));
+        request.getSession().removeAttribute("plan");
         plan.setNombrePlan(request.getParameter("nombre"));
         plan.setCosto(Integer.valueOf(request.getParameter("costo")));
         plan.setDescripcion(request.getParameter("descripcion"));
@@ -199,12 +205,13 @@ public class Controlador extends HttpServlet {
         plan.setNoches(Integer.valueOf(request.getParameter("noches")));
         Parque parque = new Parque();
         parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
-//        plan.setParque(parque);
-//        PlanDAO planDAO = new PlanDAO();
-//        planDAO.modificar(plan);
-        response.sendRedirect("configuracion/ConfiguracionPlanes.jsp");
+        plan.setIdParque(parque);
+        Hotel hotel = new Hotel();
+        hotel.setIdHotel(Integer.valueOf(request.getParameter("idHotel")));
+        plan.setIdHotel(hotel);
+        planFacadeLocal.merge(plan);
+        response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
     }
-//    
 
     public void crearPlan(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
@@ -221,8 +228,7 @@ public class Controlador extends HttpServlet {
         hotel.setIdHotel(Integer.valueOf(request.getParameter("idHotel")));
         plan.setIdHotel(hotel);
         plan = planFacadeLocal.merge(plan);
-        InputStream inputStream = null; // input stream of the upload file
-        // obtains the upload file part in this multipart request
+        InputStream inputStream = null;
         Part filePart = request.getPart("photo");
         if (filePart != null) {
             inputStream = filePart.getInputStream();
@@ -231,7 +237,7 @@ public class Controlador extends HttpServlet {
         if (inputStream != null) {
             archivo = new Archivo();
             archivo.setNombre(filePart.getSubmittedFileName());
-            archivo.setImg(convertirInputStreamAByte(inputStream));
+            archivo.setImg(ConvertidorBlob.convertirInputStreamAByte(inputStream));
             archivo.setIdPlan(plan);
         }
         archivoFacadeLocal.create(archivo);
@@ -239,7 +245,7 @@ public class Controlador extends HttpServlet {
         response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
     }
 
-    public void eliminarPlan(Integer id,HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void eliminarPlan(Integer id, HttpServletRequest request, HttpServletResponse response) throws IOException {
         Plan plan = planFacadeLocal.find(id);
         planFacadeLocal.remove(plan);
         request.getSession().removeAttribute("idPlan");
@@ -248,32 +254,45 @@ public class Controlador extends HttpServlet {
     }
 
     public void crearProveedor(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        ProveedorDAO proveedorDAO = new ProveedorDAO();
-//        Proveedor proveedor = new Proveedor();
-//        proveedor.setEmpresa(request.getParameter("empresa"));
-//        proveedor.setNombre(request.getParameter("nombreProveedor"));
-//        proveedor.setNit(request.getParameter("nit"));
-//        proveedor.setDireccion(request.getParameter("direccion"));
-//        proveedor.setTelefono(Integer.valueOf(request.getParameter("telefono")));
-//        proveedorDAO.agregar(proveedor);
-//        response.sendRedirect("configuracion/ConfiguracionProveedores.jsp");
+        Usuario usuProve = new Usuario();
+        usuProve.setUsuario(request.getParameter("usuario"));
+        usuProve.setEmpresa(request.getParameter("empresa"));
+        usuProve.setNombre(request.getParameter("nombreProveedor"));
+        usuProve.setContrasena(request.getParameter("password"));
+        usuProve.setTipoDocumento(Integer.valueOf(request.getParameter("tipoDocumento")));
+        usuProve.setNumeroDocumento(Integer.valueOf(request.getParameter("numDocumento")));
+        usuProve.setDireccion(request.getParameter("direccion"));
+        usuProve.setTelefono(request.getParameter("telefono"));
+        usuProve.setCorreo(request.getParameter("correo"));
+        usuProve.setRol(new Rol(RolEnum.PROVEEDOR.getValor()));
+        usuProve.setEstado(EstadoEnum.ACTIVO.getValor());
+        usuarioFacadeLocal.create(usuProve);
+        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
     }
-//    
 
     public void modificarProveedor(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        Proveedor proveedor = new Proveedor();
-//        proveedor.setIdProveedor(Integer.valueOf(request.getParameter("idProveedor")));
-//        proveedor.setEmpresa(request.getParameter("empresa"));
-//        proveedor.setNombre(request.getParameter("nombre"));
-//        proveedor.setNit(request.getParameter("nit"));
-//        proveedor.setDireccion(request.getParameter("direccion"));
-//        proveedor.setTelefono(Integer.valueOf(request.getParameter("telefono")));
-//        ProveedorDAO proveedorDAO = new ProveedorDAO();
-//        proveedorDAO.modificar(proveedor);
-//        request.getSession().removeAttribute("proveedor");
-//        response.sendRedirect("configuracion/ConfiguracionProveedores.jsp");
+        Usuario usuaProvee = usuarioFacadeLocal.find(((Usuario) request.getSession().getAttribute("proveedor")).getIdUsuario());
+        request.getSession().removeAttribute("proveedor");
+        usuaProvee.setUsuario(request.getParameter("usuario"));
+        usuaProvee.setEmpresa(request.getParameter("empresa"));
+        usuaProvee.setNombre(request.getParameter("nombre"));
+        usuaProvee.setTipoDocumento(Integer.valueOf(request.getParameter("tipoDocumento")));
+        usuaProvee.setNumeroDocumento(Integer.valueOf(request.getParameter("numDocumento")));
+        usuaProvee.setDireccion(request.getParameter("direccion"));
+        usuaProvee.setTelefono(request.getParameter("telefono"));
+        usuaProvee.setCorreo(request.getParameter("correo"));
+        usuarioFacadeLocal.edit(usuaProvee);
+        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
     }
-//
+
+    private void eliminarProveedor(Integer idProveedor, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.removeAttribute("idProveedor");
+        Usuario usuario = usuarioFacadeLocal.find(idProveedor);
+        usuarioFacadeLocal.remove(usuario);
+
+        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
+    }
+
 //    private void crearPaquete(HttpServletRequest request, HttpServletResponse response) {
 //        Plan plan =new  Plan();
 //        Parque parque = new Parque();
@@ -293,13 +312,12 @@ public class Controlador extends HttpServlet {
 //                plan.setDias(Integer.valueOf(request.getParameter("Noche"))+1);
 //                plan.setDescuento(Integer.valueOf(request.getParameter("Descuento")));
 //                
-
     //planDAO.agregar();
 //    }
     public void aceptarCliente(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
         Usuario usuario = usuarioFacadeLocal.find(request.getSession().getAttribute("idCliente"));
         request.getSession().removeAttribute("idCliente");
-        usuario.setEstado(EstadoEnum.ACEPTADO.getValor());
+        usuario.setEstado(EstadoEnum.ACTIVO.getValor());
         usuarioFacadeLocal.edit(usuario);
         ControladorEnvioCorreo.envioCorreo(usuario);
         response.sendRedirect("configuracion/cliente/configuracionClientes.jsp");
@@ -315,12 +333,12 @@ public class Controlador extends HttpServlet {
             user.setNombre(nom);
             user.setUsuario(usu);
             user.setNumeroDocumento(Integer.valueOf(ced));
-            user.setContrasena(getRandomPass());
+            user.setContrasena(GeneradorMD5.getRandomPass());
             user.setCorreo(correo);
-            user.setTipoDocumento(BigInteger.ONE.intValue());
+            user.setTipoDocumento(TipoDocumentoEnum.CEDULA.getValor());
             Rol rol = new Rol(RolEnum.CLIENTE.getValor());
             user.setRol(rol);
-            user.setEstado(EstadoEnum.PENDIENTE.getValor());
+            user.setEstado(EstadoEnum.INACTIVO.getValor());
             usuarioFacadeLocal.create(user);
             try {
                 request.getSession().setAttribute("ex", new Exception("El usuario fue registrado exitosamente. En unos momentos llegara a su correo las credenciales de ingreso.", new Throwable("Info")));
@@ -336,21 +354,12 @@ public class Controlador extends HttpServlet {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-    }
-
-    private String getRandomPass() {
-        StringBuilder sb = new StringBuilder(50);
-        for (int x = 0; x < 6; x++) {
-            sb.append((char) ((int) (Math.random() * 26) + 97));
-        }
-        return sb.toString();
     }
 
     private void registroParcialCliente(Integer idCliente, HttpServletRequest request, HttpServletResponse response) throws IOException, GeneralSecurityException {
         Usuario usuario = usuarioFacadeLocal.find(idCliente);
         ControladorEnvioCorreo.envioCorreo(usuario);
-        usuario.setEstado(EstadoEnum.ACEPTADO.getValor());
+        usuario.setEstado(EstadoEnum.ACTIVO.getValor());
         usuarioFacadeLocal.edit(usuario);
         request.getSession().removeAttribute("idCliente");
         request.getSession().removeAttribute("envioCorreo");

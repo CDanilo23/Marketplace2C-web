@@ -46,9 +46,6 @@
                                 <li>
                                     <a href="CrearHotel.jsp">Crear nuevo Hotel</a>
                                 </li>
-                                <li>
-                                    <a href="EliminarHotel.jsp">Eliminar Hotel</a>
-                                </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>

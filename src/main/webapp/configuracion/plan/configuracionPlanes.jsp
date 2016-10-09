@@ -83,8 +83,8 @@
                                 out.println("<td>" + plan.getNoches() + "</td>");
                                 out.println("<td>" + plan.getIdParque().getParque()+ "</td>");
                                 out.println("<td>" + plan.getIdHotel().getNombre()+ "</td>");
-                                out.println("<td align='center'><img src='data:image/jpg;base64," + plan.getListaArchivo().get(0).getImgString() + "' alt='IMG DESC'></img></td>");
-                                out.println("<td><a href='datosModificarPlan.jsp?idPlan=" + plan.getIdPlan()
+                                out.println("<td align='center'><img src='data:image/jpg;base64," + plan.getArchivo().getImgString() + "' alt='IMG DESC'></img></td>");
+                                out.println("<td><a href='datosModificarEliminarPlan.jsp?idPlan=" + plan.getIdPlan()
                                         + "&nombrePlan=" + plan.getNombrePlan()
                                         + "&descripcion=" + plan.getDescripcion()
                                         + "&costo=" + plan.getCosto()
@@ -93,8 +93,10 @@
                                         + "&idParque=" + plan.getIdParque().getIdParque() 
                                         + "&parque="+plan.getIdParque().getParque()
                                         + "&idHotel="+plan.getIdHotel().getIdHotel()
-                                        + "&hotel="+plan.getIdHotel().getIdHotel()+"'><img src='../../img/modificar.jpg'/></a></td>");
-                                out.println("<td><a href='datosModificarPlan.jsp?idPlan=" + plan.getIdPlan() +"'><img src='../../img/eliminar.jpg'/></a></td>");
+                                        + "&nomArchivo="+plan.getArchivo().getNombre()
+                                        + "&idArchivo="+plan.getArchivo().getIdArchivo()
+                                        + "&nomHotel="+plan.getIdHotel().getNombre()+"'><img src='../../img/modificar.jpg'/></a></td>");
+                                out.println("<td><a href='datosModificarEliminarPlan.jsp?idPlan=" + plan.getIdPlan() +"'><img src='../../img/eliminar.jpg'/></a></td>");
                                 out.println("</tr>");
                             }
                         %>

@@ -10,8 +10,9 @@ import co.com.uniminuto.entities.Archivo;
 import co.com.uniminuto.entities.Hotel;
 import co.com.uniminuto.entities.Parque;
 import co.com.uniminuto.entities.Plan;
-import co.com.uniminuto.entities.Proveedor;
+import co.com.uniminuto.entities.Rol;
 import co.com.uniminuto.entities.Ubicacion;
+import co.com.uniminuto.entities.Usuario;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class Conexion {
 
     private static Connection con = null;
     private List<Hotel> lh;
-    private List<Proveedor> lpro;
+    private List<Usuario> lpro;
     private List<Parque> lp;
     private List<Plan> lpla;
 
@@ -56,6 +57,10 @@ public class Conexion {
                         break;
                     case ConsultarPlanes:
                         lpla = getPlanes();
+                        break;
+                        
+                    case ConsultarProveedor:
+                        lpro = getProveedores();
                         break;
                     default:
                         break;
@@ -156,24 +161,36 @@ public class Conexion {
         }
     }
 
-    public static List<Proveedor> getProveedores() {
-        List<Proveedor> lp = new ArrayList<Proveedor>();
-//        try {
-//            PreparedStatement ps = con.prepareStatement("select p.id_parque, p.parque, p.id_ubicacion from parque p");
-//            ResultSet rs = ps.executeQuery();
-//            Proveedor proveedor = null;
-//            while (rs.next()) {
-//                proveedor = new Proveedor();
-//                proveedor.setIdProvedor(rs.getInt(1));
-//                proveedor.setProveed(rs.getString(2));
-//                proveedor.setIdUbicacion(new Ubicacion(rs.getInt(3)));
-//                lp.add(parque);
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            drivenFinally(con);
-//        }
+    public static List<Usuario> getProveedores() {
+        List<Usuario> lp = new ArrayList<>();
+        try {
+            StringBuilder sb = new StringBuilder().append("SELECT u.ID_USUARIO,u.USUARIO, u.CONTRASENA,u.NOMBRE,u.EMPRESA,u.NUMERO_DOCUMENTO,u.TIPO_DOCUMENTO,u.DIRECCION,u.ROL,u.CORREO,u.TELEFONO,u.ESTADO ");
+            sb.append("FROM usuario u where u.rol = ?");
+            PreparedStatement ps = con.prepareStatement(sb.toString());
+            ps.setInt(1,RolEnum.PROVEEDOR.getValor() );
+            ResultSet rs = ps.executeQuery();
+            Usuario usuario = null;
+            while (rs.next()) {
+                usuario = new Usuario();
+                usuario.setIdUsuario(rs.getInt(1));
+                usuario.setUsuario(rs.getString(2));
+                usuario.setContrasena(rs.getString(3));
+                usuario.setNombre(rs.getString(4));
+                usuario.setEmpresa(rs.getString(5));
+                usuario.setNumeroDocumento(rs.getInt(6));
+                usuario.setTipoDocumento(rs.getInt(7));
+                usuario.setDireccion(rs.getString(8));
+                usuario.setRol(new Rol(rs.getInt(9)));
+                usuario.setCorreo(rs.getString(10));
+                usuario.setTelefono(rs.getString(11));
+                usuario.setEstado(rs.getInt(12));
+                lp.add(usuario);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            drivenFinally(con);
+        }
         return lp;
     }
 
@@ -209,9 +226,7 @@ public class Conexion {
                 String encodedImage = Base64.encode(baos.toByteArray());
                 archivo.setImgString(encodedImage);
 //                archivo.setImg(imageBlob.getBytes(1, (int) imageBlob.length()));
-                List<Archivo> la = new ArrayList<>();
-                la.add(archivo);
-                plan.setListaArchivo(la);
+                plan.setArchivo(archivo);
                 lp.add(plan);
             }
         } catch (SQLException ex) {
@@ -296,5 +311,13 @@ public class Conexion {
 
     public List<Plan> getLpla() {
         return lpla;
+    }
+
+    public List<Usuario> getLpro() {
+        return lpro;
+    }
+
+    public void setLpro(List<Usuario> lpro) {
+        this.lpro = lpro;
     }
 }

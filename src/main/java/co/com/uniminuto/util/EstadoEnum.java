@@ -10,8 +10,8 @@ package co.com.uniminuto.util;
  * @author pc
  */
 public enum EstadoEnum {
-    ACEPTADO(1),
-    PENDIENTE(2);
+    ACTIVO(1),
+    INACTIVO(2);
     
     private Integer valor;
     EstadoEnum(Integer valor){
